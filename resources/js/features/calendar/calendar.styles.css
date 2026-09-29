@@ -1,0 +1,66 @@
+.fc-custom-weekend {
+  background-color: rgba(255, 165, 30, 0.3) !important;
+}
+
+.fc-custom-weekend .fc-daygrid-day-number {
+  margin-top: 0px !important;
+  padding-top: 2px !important;
+}
+
+.fc-tooltip {
+  position: absolute;
+  z-index: 9999;
+  background: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  pointer-events: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.fc-daygrid-day-top {
+  flex-direction: row !important;
+  width: 100% !important;
+  justify-content: space-between;
+}
+
+/* Weekend background */
+.fc-weekend-cell {
+  background-color: rgba(255, 165, 0, 0.3) !important;
+}
+
+.fc-holiday-cell {
+  background-color: rgba(255, 165, 0, 0.3) !important;
+}
+
+/* Weekend label */
+.fc-weekend-title,
+.fc-holiday-title {
+  margin-top: 4px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.3);
+  padding: 4px;
+  font-size: 11px;
+  font-style: italic;
+  line-height: 1;
+}
+
+.fc .fc-daygrid-day-top a {
+  display: flex;
+  width: 100%;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+}
+
+.fc-tooltip {
+  position: absolute;
+  z-index: 9999;
+  background: #333;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  pointer-events: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>body{font-family:DejaVu Sans,sans-serif;font-size:12px;color:#222}h1{margin:0 0 4px}.muted{color:#666}.row{width:100%;margin:18px 0}.row td{vertical-align:top}table.items{width:100%;border-collapse:collapse}table.items th,table.items td{border:1px solid #ddd;padding:7px}table.items th{background:#f3f3f3}.right{text-align:right}.totals{width:45%;margin-left:auto;margin-top:15px}.totals td{padding:4px}.total{font-size:15px;font-weight:bold;border-top:1px solid #222}</style></head>
+<body>
+<h1>Sales Invoice</h1><div class="muted">{{ $invoice->invoice_no }}</div>
+<table class="row"><tr><td><strong>Bill to</strong><br>{{ $invoice->client?->name }}<br>{{ $invoice->client?->address }}<br>{{ $invoice->client?->phone }}</td><td class="right"><strong>Invoice date</strong><br>{{ $invoice->invoice_date?->format('Y-m-d') }}<br><br><strong>Status</strong><br>{{ $invoice->payment_status }}</td></tr></table>
+<table class="items"><thead><tr><th>#</th><th>Product</th><th>Unit</th><th class="right">Qty</th><th class="right">Price</th><th class="right">Discount</th><th class="right">Tax</th><th class="right">Total</th></tr></thead><tbody>
+@foreach($invoice->items as $item)<tr><td>{{ $loop->iteration }}</td><td>{{ $item->product?->name }}</td><td>{{ $item->product?->unit?->name }}</td><td class="right">{{ number_format($item->quantity, 2) }}</td><td class="right">{{ number_format($item->unit_price, 2) }}</td><td class="right">{{ number_format($item->discount, 2) }}</td><td class="right">{{ number_format($item->tax, 2) }}</td><td class="right">{{ number_format($item->line_total, 2) }}</td></tr>@endforeach
+</tbody></table>
+<table class="totals"><tr><td>Subtotal</td><td class="right">{{ number_format($invoice->subtotal, 2) }}</td></tr><tr><td>Discount</td><td class="right">{{ number_format($invoice->discount, 2) }}</td></tr><tr><td>Tax</td><td class="right">{{ number_format($invoice->tax, 2) }}</td></tr><tr class="total"><td>Total</td><td class="right">{{ number_format($invoice->grand_total, 2) }}</td></tr><tr><td>Paid</td><td class="right">{{ number_format($invoice->paid_amount, 2) }}</td></tr><tr><td>Due</td><td class="right">{{ number_format($invoice->due_amount, 2) }}</td></tr></table>
+@if($invoice->remarks)<p><strong>Remarks:</strong> {{ $invoice->remarks }}</p>@endif
+</body></html>

@@ -1,0 +1,1 @@
+<div className="mt-30 text-bold text-3xl text-red-400">hello this is deafult dashboard</div>

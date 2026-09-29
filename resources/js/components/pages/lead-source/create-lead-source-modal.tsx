@@ -1,0 +1,193 @@
+import { type FormEvent } from 'react';
+
+import { useForm } from '@inertiajs/react';
+
+import { Button } from '@/components/ui/button';
+import {
+    FormError,
+    FormField,
+    FormLabel,
+} from '@/components/ui/form/form-field';
+import { Input } from '@/components/ui/form/input';
+import { AppModal } from '@/components/ui/modal/app-modal';
+import { cn } from '@/lib/utils';
+import { NumberInput } from '@/components/ui/form/number-input';
+import { Checkbox } from '@/components/ui/form/checkbox';
+import { Switch } from '@/components/ui/form/switch';
+
+type CreateDepartmentModalProps = {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+};
+
+type LeadSourceForm = {
+    name: string;
+    cost_per_lead: number;
+    is_active: boolean;
+    is_default: boolean;
+};
+
+export default function CreateLeadSourceModal({
+    open,
+    onOpenChange,
+}: CreateDepartmentModalProps) {
+    const { data, setData, post, processing, errors, reset, clearErrors } =
+        useForm<LeadSourceForm>({
+            name: '',
+            cost_per_lead: 0,
+            is_active: true,
+            is_default: false,
+        });
+
+    const handleClose = () => {
+        if (processing) {
+            return;
+        }
+
+        reset();
+        clearErrors();
+
+        onOpenChange(false);
+    };
+
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        post('/lead-source', {
+            preserveScroll: true,
+
+            onSuccess: () => {
+                reset();
+                clearErrors();
+
+                onOpenChange(false);
+            },
+        });
+    };
+
+    return (
+        <AppModal
+            open={open}
+            onOpenChange={(nextOpen) => {
+                if (!nextOpen) {
+                    handleClose();
+                    return;
+                }
+
+                onOpenChange(nextOpen);
+            }}
+            title="Add New Source"
+            busy={processing}
+            centered={false}
+            footer={
+                <>
+                    <Button
+                        type="button"
+                        variant="secondary"
+                        appearance="outline"
+                        disabled={processing}
+                        onClick={handleClose}
+                    >
+                        Cancel
+                    </Button>
+
+                    <Button
+                        type="submit"
+                        form="create-lead-source-form"
+                        disabled={processing}
+                    >
+                        {processing ? 'Saving...' : 'Save Source'}
+                    </Button>
+                </>
+            }
+        >
+            <form id="create-lead-source-form" onSubmit={handleSubmit}>
+                <div className="row">
+                    <div className="col-12">
+                        <FormField>
+                            <FormLabel htmlFor="name" required>
+                                Name
+                            </FormLabel>
+
+                            <Input
+                                id="name"
+                                name="name"
+                                value={data.name}
+                                placeholder="e.g. Website"
+                                disabled={processing}
+                                className={cn(errors.name && 'is-invalid')}
+                                onChange={(event) =>
+                                    setData('name', event.target.value)
+                                }
+                            />
+
+                            <FormError error={errors.name} />
+                        </FormField>
+                    </div>
+
+                    <div className="col-12">
+                        <FormField>
+                            <FormLabel htmlFor="code" required>
+                                Cost Per Lead
+                            </FormLabel>
+
+                            <NumberInput
+                                id="code"
+                                name="code"
+                                value={data.cost_per_lead}
+                                placeholder="e.g. 3.5"
+                                disabled={processing}
+                                className={cn(
+                                    errors.cost_per_lead && 'is-invalid',
+                                )}
+                                onValueChange={(value) =>
+                                    setData('cost_per_lead', value)
+                                }
+                            />
+
+                            <FormError error={errors.cost_per_lead} />
+                        </FormField>
+                    </div>
+
+                    <div className="col-6">
+                        <FormField>
+                            <FormLabel htmlFor="is_active">Status</FormLabel>
+
+                            <Switch
+                                id="is_active"
+                                name="is_active"
+                                label="Is Active"
+                                checked={data.is_active}
+                                disabled={processing}
+                                onChange={(event) =>
+                                    setData('is_active', event.target.checked)
+                                }
+                            />
+
+                            <FormError error={errors.is_active} />
+                        </FormField>
+                    </div>
+
+                    <div className="col-6">
+                        <FormField>
+                            <FormLabel htmlFor="is_default">Default</FormLabel>
+
+                            <Switch
+                                id="is_default"
+                                name="is_default"
+                                label="Is Default"
+                                checked={data.is_default}
+                                disabled={processing}
+                                onChange={(event) =>
+                                    setData('is_default', event.target.checked)
+                                }
+                            />
+
+                            <FormError error={errors.is_default} />
+                        </FormField>
+                    </div>
+                </div>
+            </form>
+        </AppModal>
+    );
+}
