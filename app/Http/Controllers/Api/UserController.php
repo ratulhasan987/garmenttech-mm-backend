@@ -250,7 +250,10 @@ class UserController extends Controller
         Request $request
     ): JsonResponse {
 
-        return $this->userService->employees($request->keyord);
+        return ApiResponse::success(
+            message: 'Employees data retrieved successfully',
+            data: $this->userService->employees($request?->keyword ?? null)
+        );
     }
 
     public function me(Request $request)
