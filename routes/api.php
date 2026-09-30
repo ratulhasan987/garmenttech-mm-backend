@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
@@ -18,5 +19,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/users/{user}/status', [UserController::class, 'status']);
     Route::apiResource('users', UserController::class);
     Route::get('/get-employees', [UserController::class, 'employees']);
+
+    // general settings
+    Route::get('/departments/search', [DepartmentController::class, 'search']);
+    Route::apiResource('departments',DepartmentController::class);
 
 });
