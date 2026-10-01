@@ -209,6 +209,23 @@ class UserController extends Controller
             );
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Protect Default User
+        |--------------------------------------------------------------------------
+        |
+        | User ID 1 can be viewed and updated,
+        | but cannot be deleted.
+        |--------------------------------------------------------------------------
+        */
+
+        if ($user->id === 1) {
+            return ApiResponse::error(
+                message: 'Default system user cannot be deleted.'
+            );
+        }
+
+
         $user->delete();
 
 
@@ -227,6 +244,22 @@ class UserController extends Controller
 
         if ($user->hasRole('superadmin')) {
             abort(403, 'Super admin status cannot be changed.');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Protect Default User
+        |--------------------------------------------------------------------------
+        |
+        | User ID 1 can be viewed and updated,
+        | but status cannot be changed.
+        |--------------------------------------------------------------------------
+        */
+
+        if ($user->id === 1) {
+            return ApiResponse::error(
+                message: 'Default system user status cannot be changed.'
+            );
         }
 
         $newStatus = $user->status === 'active'
