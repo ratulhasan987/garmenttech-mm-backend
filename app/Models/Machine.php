@@ -4,56 +4,41 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Machine extends Model
 {
     protected $fillable = [
         'machine_id',
         'model_id',
-        'floor_id',
         'code',
-        'sl_no',
         'qr_code',
         'notes',
         'status',
     ];
 
+    // Relationships
 
     public function model(): BelongsTo
     {
         return $this->belongsTo(MachineModel::class, 'model_id');
     }
 
-
-    public function floor(): BelongsTo
+    public function locations(): HasMany
     {
-        return $this->belongsTo(Floor::class);
+        return $this->hasMany(MachineLocation::class);
     }
 
-
-    public function building(): HasOneThrough
+    public function currentLocation(): HasOne
     {
-        return $this->hasOneThrough(
-            Building::class,
-            Floor::class,
-            'id',          // Foreign key on floors table...
-            'id',          // Foreign key on buildings table...
-            'floor_id',    // Local key on machines table...
-            'building_id'  // Local key on floors table...
-        );
+        return $this->hasOne(MachineLocation::class)->whereNull('removed_at');
     }
 
+    // Helpers
 
-    public function brand(): HasOneThrough
+    public function isCurrentlyAssigned(): bool
     {
-        return $this->hasOneThrough(
-            Brand::class,
-            MachineModel::class,
-            'id',          // Foreign key on machine_models table...
-            'id',          // Foreign key on brands table...
-            'model_id',    // Local key on machines table...
-            'brand_id'     // Local key on machine_models table...
-        );
+        return $this->currentLocation()->exists();
     }
 }

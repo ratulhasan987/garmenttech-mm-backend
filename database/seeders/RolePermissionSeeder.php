@@ -416,6 +416,17 @@ class RolePermissionSeeder extends Seeder
                     'floor.delete',
                 ],
             ],
+            [
+                'group_name' => 'Machines',
+                'permissions' => [
+                    'machine.list',
+                    'machine.create',
+                    'machine.view',
+                    'machine.edit',
+                    'machine.delete',
+                    'machine.movement',
+                ],
+            ],
 
 
         ];

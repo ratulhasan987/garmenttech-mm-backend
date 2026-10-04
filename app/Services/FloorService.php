@@ -25,8 +25,6 @@ class FloorService
                 (int) $data['floor_number']
             );
 
-            info('debug', $data);
-
             return Floor::create($data);
         });
     }
