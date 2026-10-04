@@ -184,6 +184,47 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         ],
     },
 
+// Machine start 
+
+
+  {
+        id: 'machine',
+        title: 'Machine',
+
+        items: [
+      
+    
+            {
+                id: 'machine_setup',
+                title: 'Machine Setup',
+
+                icon: {
+                    id: 'stroke-project',
+                    type: 'fill',
+                },
+                subItems: [
+                    {
+                        id: 'building_setup',
+                        title: 'Building',
+                        path: '/building',
+                    },
+                    {
+                        id: 'lead_stages',
+                        title: 'Lead Stages',
+                        path: '/lead-stage',
+                    },
+                  
+                ],
+            },
+        ],
+    },
+
+
+
+// Machine end
+
+
+
     {
         id: 'sales_section',
         title: 'Sales',

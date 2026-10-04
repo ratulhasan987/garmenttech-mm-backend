@@ -376,6 +376,46 @@ class RolePermissionSeeder extends Seeder
                     'settings.ai_config',
                 ],
             ],
+            [
+                'group_name' => 'Machine Categories',
+                'permissions' => [
+                    'machine_category.list',
+                    'machine_category.create',
+                    'machine_category.view',
+                    'machine_category.edit',
+                    'machine_category.delete',
+                ],
+            ],
+            [
+                'group_name' => 'Machine Models',
+                'permissions' => [
+                    'machine_model.list',
+                    'machine_model.create',
+                    'machine_model.view',
+                    'machine_model.edit',
+                    'machine_model.delete',
+                ],
+            ],
+            [
+                'group_name' => 'Buildings',
+                'permissions' => [
+                    'building.list',
+                    'building.create',
+                    'building.view',
+                    'building.edit',
+                    'building.delete',
+                ],
+            ],
+            [
+                'group_name' => 'Floors',
+                'permissions' => [
+                    'floor.list',
+                    'floor.create',
+                    'floor.view',
+                    'floor.edit',
+                    'floor.delete',
+                ],
+            ],
 
 
         ];

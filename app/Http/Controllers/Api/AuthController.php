@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Permission;
 
 class AuthController extends Controller
 {
@@ -39,6 +40,10 @@ class AuthController extends Controller
         }
 
 
+        $user->load([
+            'roles',
+            'permissions'
+        ]);
 
         return ApiResponse::success(
             message: 'Login successful',
@@ -98,7 +103,25 @@ class AuthController extends Controller
                         $user->relationLoaded('roles'),
                         fn() => $user->getRoleNames(),
                     ),
-                ]
+                ],
+                'permissions' => $user->getAllPermissions()
+                    ->pluck('name')
+                    ->values(),
+
+                'allPermissions' => Permission::query()
+                    ->orderBy('group_name')
+                    ->orderBy('name')
+                    ->get(['group_name', 'name'])
+                    ->groupBy('group_name')
+                    ->map(fn($permissions, $groupName) => [
+                        'group_name' => $groupName,
+                        'permissions' => $permissions
+                            ->pluck('name')
+                            ->values()
+                            ->all(),
+                    ])
+                    ->values()
+                    ->all(),
             ]
         );
 

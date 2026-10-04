@@ -209,6 +209,23 @@ class UserController extends Controller
             );
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Protect Default User
+        |--------------------------------------------------------------------------
+        |
+        | User ID 1 can be viewed and updated,
+        | but cannot be deleted.
+        |--------------------------------------------------------------------------
+        */
+
+        if ($user->id === 1) {
+            return ApiResponse::error(
+                message: 'Default system user cannot be deleted.'
+            );
+        }
+
+
         $user->delete();
 
 
@@ -227,6 +244,22 @@ class UserController extends Controller
 
         if ($user->hasRole('superadmin')) {
             abort(403, 'Super admin status cannot be changed.');
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Protect Default User
+        |--------------------------------------------------------------------------
+        |
+        | User ID 1 can be viewed and updated,
+        | but status cannot be changed.
+        |--------------------------------------------------------------------------
+        */
+
+        if ($user->id === 1) {
+            return ApiResponse::error(
+                message: 'Default system user status cannot be changed.'
+            );
         }
 
         $newStatus = $user->status === 'active'
@@ -250,7 +283,10 @@ class UserController extends Controller
         Request $request
     ): JsonResponse {
 
-        return $this->userService->employees($request->keyord);
+        return ApiResponse::success(
+            message: 'Employees data retrieved successfully',
+            data: $this->userService->employees($request?->keyword ?? null)
+        );
     }
 
     public function me(Request $request)
