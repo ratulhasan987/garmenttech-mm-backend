@@ -51,7 +51,8 @@ class DepartmentController extends Controller
             ->withQueryString();
 
         return ApiResponse::success(
-            data: $departments,
+           data: $departments->items(),
+            meta: $departments,
             message: 'Departments retrieved successfully.',
         );
     }
@@ -263,7 +264,8 @@ class DepartmentController extends Controller
             ->get();
 
         return ApiResponse::success(
-            data: $departments,
+            data: $departments->items(),
+            meta: $departments,
             message: 'Departments retrieved successfully.',
         );
     }
