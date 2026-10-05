@@ -7,6 +7,44 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property int|null $client_id
+ * @property int|null $vendor_id
+ * @property string $source_type
+ * @property int $source_id
+ * @property string $document_no
+ * @property \Carbon\CarbonImmutable $document_date
+ * @property \Carbon\CarbonImmutable $due_date
+ * @property numeric $amount
+ * @property numeric $received_amount
+ * @property numeric $balance
+ * @property string $status
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \App\Models\Client|null $client
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\FinanceTransaction> $transactions
+ * @property-read int|null $transactions_count
+ * @property-read \App\Models\Vendor|null $vendor
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable whereBalance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable whereClientId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable whereDocumentDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable whereDocumentNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable whereDueDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable whereReceivedAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable whereSourceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable whereSourceType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountsReceivable whereVendorId($value)
+ * @mixin \Eloquent
+ */
 class AccountsReceivable extends Model
 {
     use HasFactory;

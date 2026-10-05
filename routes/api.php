@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\BuildingController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\DesignationController;
 use App\Http\Controllers\Api\FloorController;
 use App\Http\Controllers\Api\MachineCategoryController;
+use App\Http\Controllers\Api\MachineController;
 use App\Http\Controllers\Api\MachineModelController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\ShiftController;
@@ -43,4 +45,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('buildings', BuildingController::class);
 
     Route::apiResource('floors', FloorController::class);
+
+    Route::apiResource('machines', MachineController::class);
+    Route::get('/machines/{id}/location-history', [MachineController::class, 'locationHistory']);
+    Route::get('/machines/{machine}/qr-code', [MachineController::class, 'downloadQr']);
+    Route::post('/machines/{machine}/move', [MachineController::class, 'move']);
+    Route::post('/machines/{machine}/remove-location', [MachineController::class, 'removeLocation']);
+
+    Route::get('/brands/suggestions', [BrandController::class, 'suggestions']);
+    Route::apiResource('brands', BrandController::class);
+
 });

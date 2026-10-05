@@ -5,6 +5,48 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property string|null $receipt_no
+ * @property int $invoice_id
+ * @property int $invoice_payment_configure_id
+ * @property numeric|null $pay_amount
+ * @property string|null $payment_method
+ * @property string|null $bank_name
+ * @property string|null $branch
+ * @property int|null $account_id
+ * @property string|null $reference
+ * @property int|null $created_by
+ * @property string|null $description
+ * @property string|null $attachment
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \App\Models\Client|null $client
+ * @property-read \App\Models\InvoicePaymentConfigure $configure
+ * @property-read \App\Models\User|null $createdBy
+ * @property-read \App\Models\Invoice $invoice
+ * @property-read \App\Models\InvoicePaymentConfigure $paymentStep
+ * @property-read \App\Models\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment whereAccountId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment whereAttachment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment whereBankName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment whereBranch($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment whereInvoiceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment whereInvoicePaymentConfigureId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment wherePayAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment wherePaymentMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment whereReceiptNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment whereReference($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|InvoicePayment whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class InvoicePayment extends Model
 {
     use HasFactory;

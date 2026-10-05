@@ -4,6 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property-read \App\Models\RequisitionItem|null $requisitionItem
+ * @property-read \App\Models\RequestForQuotation|null $rfq
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RequestForQuotationItem newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RequestForQuotationItem newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|RequestForQuotationItem query()
+ * @mixin \Eloquent
+ */
 class RequestForQuotationItem extends Model
 {
     protected $table = 'request_for_quotation_items';

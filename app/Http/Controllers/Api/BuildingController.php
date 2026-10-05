@@ -11,6 +11,7 @@ use App\Services\BuildingService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use InvalidArgumentException;
+use Dedoc\Scramble\Attributes\Response;
 
 class BuildingController extends Controller
 {

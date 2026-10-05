@@ -40,6 +40,8 @@ class UpdateUser
             $user->name = $data['name'];
             $user->email = $data['email'];
 
+            $user->role = $data['role'];
+
             $user->phone = $data['phone'];
             $user->mobile = $data['mobile'] ?? null;
             $user->national_id = $data['national_id'] ?? null;

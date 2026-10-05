@@ -18,16 +18,7 @@ return new class extends Migration {
             $table->foreignId('model_id')
                 ->constrained('machine_models');
 
-            $table->foreignId('floor_id')
-                ->nullable()
-                ->constrained('floors')
-                ->nullOnDelete();
-
             $table->string('code')->unique();
-
-            $table->string('sl_no');
-
-            $table->string('qr_code');
 
             $table->string('notes')->nullable();
 
