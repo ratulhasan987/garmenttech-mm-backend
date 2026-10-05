@@ -6,6 +6,34 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $id
+ * @property int $machine_id
+ * @property int $floor_id
+ * @property string $sl_no
+ * @property \Carbon\CarbonImmutable $assigned_at
+ * @property \Carbon\CarbonImmutable|null $removed_at
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property string|null $remarks
+ * @property-read \App\Models\Floor $floor
+ * @property-read \App\Models\Machine $machine
+ * @method static Builder<static>|MachineLocation current()
+ * @method static Builder<static>|MachineLocation history()
+ * @method static Builder<static>|MachineLocation newModelQuery()
+ * @method static Builder<static>|MachineLocation newQuery()
+ * @method static Builder<static>|MachineLocation query()
+ * @method static Builder<static>|MachineLocation whereAssignedAt($value)
+ * @method static Builder<static>|MachineLocation whereCreatedAt($value)
+ * @method static Builder<static>|MachineLocation whereFloorId($value)
+ * @method static Builder<static>|MachineLocation whereId($value)
+ * @method static Builder<static>|MachineLocation whereMachineId($value)
+ * @method static Builder<static>|MachineLocation whereRemarks($value)
+ * @method static Builder<static>|MachineLocation whereRemovedAt($value)
+ * @method static Builder<static>|MachineLocation whereSlNo($value)
+ * @method static Builder<static>|MachineLocation whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class MachineLocation extends Model
 {
     protected $fillable = [

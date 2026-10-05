@@ -7,6 +7,72 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property string $client_no
+ * @property string $name
+ * @property string $phone
+ * @property string|null $email
+ * @property string|null $nid_no
+ * @property string|null $passport_no
+ * @property string|null $tin_no
+ * @property \Carbon\CarbonImmutable|null $date_of_birth
+ * @property string|null $gender
+ * @property string|null $marital_status
+ * @property int|null $profession_id
+ * @property int|null $lead_designation_id
+ * @property string|null $company_name
+ * @property string|null $present_address
+ * @property string|null $permanent_address
+ * @property int|null $area_id
+ * @property int|null $sector_id
+ * @property string|null $image
+ * @property string $status
+ * @property int|null $lead_id
+ * @property int|null $created_by
+ * @property int|null $updated_by
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \App\Models\Area|null $area
+ * @property-read \App\Models\User|null $createdBy
+ * @property-read \App\Models\LeadDesignation|null $designation
+ * @property-read \App\Models\Lead|null $lead
+ * @property-read \App\Models\Profession|null $profession
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\SalesInvoice> $salesInvoices
+ * @property-read int|null $sales_invoices_count
+ * @property-read \App\Models\Sector|null $sector
+ * @property-read \App\Models\User|null $updatedBy
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client accessible(\App\Models\User $user)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereAreaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereClientNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereCompanyName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereCreatedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereDateOfBirth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereGender($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereLeadDesignationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereLeadId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereMaritalStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereNidNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client wherePassportNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client wherePermanentAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client wherePhone($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client wherePresentAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereProfessionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereSectorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereTinNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Client whereUpdatedBy($value)
+ * @mixin \Eloquent
+ */
 class Client extends Model
 {
     use HasFactory;

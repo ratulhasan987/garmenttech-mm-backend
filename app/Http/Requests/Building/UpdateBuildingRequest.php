@@ -20,13 +20,6 @@ class UpdateBuildingRequest extends FormRequest
         $buildingId = is_object($building) ? $building->id : $building;
 
         return [
-            'code' => [
-                'sometimes',
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('buildings', 'code')->ignore($buildingId),
-            ],
             'name' => [
                 'sometimes',
                 'required',
@@ -52,7 +45,6 @@ class UpdateBuildingRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'code.unique' => 'A building with this code already exists.',
             'name.unique' => 'A building with this name already exists.',
         ];
     }
