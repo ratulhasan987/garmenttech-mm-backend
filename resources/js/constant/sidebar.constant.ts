@@ -223,6 +223,11 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
                         title: 'Machine Model',
                         path: '/machine-model',
                     },
+                    {
+                        id: 'brand_setup',
+                        title: 'Brand',
+                        path: '/brand',
+                    },
                   
                 ],
             },

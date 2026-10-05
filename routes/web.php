@@ -63,6 +63,7 @@ use App\Http\Controllers\VendorController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\Web\BuildingController;
 use App\Http\Controllers\Web\FloorController;
+use App\Http\Controllers\Web\BrandController;
 use App\Http\Controllers\Web\MachineCategoryController;
 use App\Http\Controllers\Web\MachineModelController;
 use App\Http\Controllers\WifiIpController;
@@ -1459,14 +1460,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/machine-category', [MachineCategoryController::class, 'store'])->name('machine-category.store');
     Route::put('/machine-category/{machineCategory}', [MachineCategoryController::class, 'update'])->name('machine-category.update');
     Route::delete('/machine-category/{id}', [MachineCategoryController::class, 'destroy'])->name('machine-category.destroy');
-    // machine model 
+    // machine model
     Route::get('/machine-model', [MachineModelController::class, 'index'])->name('machine-model.index');
-Route::post('/machine-model', [MachineModelController::class, 'store'])->name('machine-model.store');
-Route::put('/machine-model/{machineModel}', [MachineModelController::class, 'update'])->name('machine-model.update');
-Route::delete('/machine-model/{id}', [MachineModelController::class, 'destroy'])->name('machine-model.destroy');
+    Route::post('/machine-model', [MachineModelController::class, 'store'])->name('machine-model.store');
+    Route::put('/machine-model/{machineModel}', [MachineModelController::class, 'update'])->name('machine-model.update');
+    Route::delete('/machine-model/{id}', [MachineModelController::class, 'destroy'])->name('machine-model.destroy');
 
-
-
+    // brand
+    Route::get('/brand', [BrandController::class, 'index'])->name('brand.index');
+    Route::post('/brand', [BrandController::class, 'store'])->name('brand.store');
+    Route::put('/brand/{brand}', [BrandController::class, 'update'])->name('brand.update');
+    Route::delete('/brand/{id}', [BrandController::class, 'destroy'])->name('brand.destroy');
 
     Route::post('/notifications/mark-as-read', function () {
         auth()->user()->unreadNotifications->markAsRead();
