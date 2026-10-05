@@ -184,6 +184,19 @@ class MachineService
 
     protected function createLocationRecord(Machine $machine, array $data): MachineLocation
     {
+        // Check if this floor + sl_no is already occupied by another active machine
+        $exists = MachineLocation::query()
+            ->where('floor_id', $data['floor_id'])
+            ->where('sl_no', $data['sl_no'])
+            ->whereNull('removed_at')
+            ->exists();
+
+        if ($exists) {
+            throw ValidationException::withMessages([
+                'location.sl_no' => "This serial number (sl_no: {$data['sl_no']}) is already occupied on the selected floor.",
+            ]);
+        }
+
         return MachineLocation::create([
             'machine_id' => $machine->id,
             'floor_id' => $data['floor_id'],

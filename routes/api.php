@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\BuildingController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\DesignationController;
@@ -50,4 +51,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/machines/{machine}/qr-code', [MachineController::class, 'downloadQr']);
     Route::post('/machines/{machine}/move', [MachineController::class, 'move']);
     Route::post('/machines/{machine}/remove-location', [MachineController::class, 'removeLocation']);
+
+    Route::get('/brands/suggestions', [BrandController::class, 'suggestions']);
+    Route::apiResource('brands', BrandController::class);
+
 });

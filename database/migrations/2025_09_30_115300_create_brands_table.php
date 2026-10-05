@@ -12,8 +12,6 @@ return new class extends Migration {
 
             $table->string('name')->unique();
 
-            $table->string('code')->unique();
-
             $table->string('country')->nullable();
 
             $table->string('website')->nullable();

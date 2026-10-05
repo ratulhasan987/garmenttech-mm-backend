@@ -427,6 +427,16 @@ class RolePermissionSeeder extends Seeder
                     'machine.movement',
                 ],
             ],
+            [
+                'group_name' => 'Brands',
+                'permissions' => [
+                    'brand.list',
+                    'brand.create',
+                    'brand.view',
+                    'brand.edit',
+                    'brand.delete',
+                ],
+            ],
 
 
         ];
