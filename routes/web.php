@@ -62,6 +62,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\Web\BuildingController;
+use App\Http\Controllers\Web\FloorController;
+use App\Http\Controllers\Web\MachineCategoryController;
+use App\Http\Controllers\Web\MachineModelController;
 use App\Http\Controllers\WifiIpController;
 use App\Http\Controllers\WorkFromHomeController;
 use Illuminate\Support\Facades\Route;
@@ -1440,11 +1443,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Loan Installment
     Route::get('hr/loan-installment/{loan}/show', [LoanInstallmentController::class, 'index'])->name('hr.loan.installment');
 
-    // Machine Maintenance
+    // Machine Maintenance setup
+    // building
     Route::get('/building', [BuildingController::class, 'index'])->name('building.index');
     Route::post('/building', [BuildingController::class, 'store'])->name('building.store');
     Route::put('/building/{building}', [BuildingController::class, 'update'])->name('building.update');
     Route::delete('/building/{id}', [BuildingController::class, 'destroy'])->name('building.destroy');
+    // Floor
+    Route::get('/floor', [FloorController::class, 'index'])->name('floor.index');
+    Route::post('/floor', [FloorController::class, 'store'])->name('floor.store');
+    Route::put('/floor/{floor}', [FloorController::class, 'update'])->name('floor.update');
+    Route::delete('/floor/{id}', [FloorController::class, 'destroy'])->name('floor.destroy');
+    // Machine category
+    Route::get('/machine-category', [MachineCategoryController::class, 'index'])->name('machine-category.index');
+    Route::post('/machine-category', [MachineCategoryController::class, 'store'])->name('machine-category.store');
+    Route::put('/machine-category/{machineCategory}', [MachineCategoryController::class, 'update'])->name('machine-category.update');
+    Route::delete('/machine-category/{id}', [MachineCategoryController::class, 'destroy'])->name('machine-category.destroy');
+    // machine model 
+    Route::get('/machine-model', [MachineModelController::class, 'index'])->name('machine-model.index');
+Route::post('/machine-model', [MachineModelController::class, 'store'])->name('machine-model.store');
+Route::put('/machine-model/{machineModel}', [MachineModelController::class, 'update'])->name('machine-model.update');
+Route::delete('/machine-model/{id}', [MachineModelController::class, 'destroy'])->name('machine-model.destroy');
+
+
+
 
     Route::post('/notifications/mark-as-read', function () {
         auth()->user()->unreadNotifications->markAsRead();

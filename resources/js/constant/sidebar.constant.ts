@@ -209,9 +209,19 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
                         path: '/building',
                     },
                     {
-                        id: 'lead_stages',
-                        title: 'Lead Stages',
-                        path: '/lead-stage',
+                        id: 'floor_setup',
+                        title: 'Floor',
+                        path: '/floor',
+                    },
+                    {
+                        id: 'machine_category_setup',
+                        title: 'Machine Category',
+                        path: '/machine-category',
+                    },
+                    {
+                        id: 'machine_model_setup',
+                        title: 'Machine Model',
+                        path: '/machine-model',
                     },
                   
                 ],
