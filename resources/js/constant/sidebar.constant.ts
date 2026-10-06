@@ -184,16 +184,33 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         ],
     },
 
-// Machine start 
+    // Machine start 
 
 
-  {
+    {
         id: 'machine',
         title: 'Machine',
 
         items: [
-      
-    
+
+            {
+                id: 'machine',
+                title: 'Machine',
+
+                icon: {
+                    id: 'stroke-project',
+                    type: 'fill',
+                },
+                path: '/machine',
+
+            },
+             {
+            id: 'machine_location',
+            title: 'Machine Location',
+            icon: { id: 'stroke-project', type: 'fill' }, // Change icon as needed
+            path: '/machine-location',
+        },
+
             {
                 id: 'machine_setup',
                 title: 'Machine Setup',
@@ -228,7 +245,7 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
                         title: 'Brand',
                         path: '/brand',
                     },
-                  
+
                 ],
             },
         ],
@@ -236,7 +253,7 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
 
 
 
-// Machine end
+    // Machine end
 
 
 

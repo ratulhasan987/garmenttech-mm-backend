@@ -61,11 +61,13 @@ use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\Web\BrandController;
 use App\Http\Controllers\Web\BuildingController;
 use App\Http\Controllers\Web\FloorController;
-use App\Http\Controllers\Web\BrandController;
 use App\Http\Controllers\Web\MachineCategoryController;
+use App\Http\Controllers\Web\MachineController;
 use App\Http\Controllers\Web\MachineModelController;
+use App\Http\Controllers\Web\MachineLocationController;
 use App\Http\Controllers\WifiIpController;
 use App\Http\Controllers\WorkFromHomeController;
 use Illuminate\Support\Facades\Route;
@@ -1471,6 +1473,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/brand', [BrandController::class, 'store'])->name('brand.store');
     Route::put('/brand/{brand}', [BrandController::class, 'update'])->name('brand.update');
     Route::delete('/brand/{id}', [BrandController::class, 'destroy'])->name('brand.destroy');
+
+    // machine
+    Route::get('/machine', [MachineController::class, 'index'])->name('machine.index');
+    Route::post('/machine', [MachineController::class, 'store'])->name('machine.store');
+    Route::put('/machine/{machine}', [MachineController::class, 'update'])->name('machine.update');
+    Route::delete('/machine/{id}', [MachineController::class, 'destroy'])->name('machine.destroy');
+
+    // New Route for QR Code Download
+    Route::get('/machine/{machine}/qr-code', [MachineController::class, 'downloadQr'])->name('machine.qr-code');
+
+
+// Machine Location Routes
+Route::get('/machine-location', [MachineLocationController::class, 'index'])->name('machine-location.index');
+Route::get('/machine-location/{floor}', [MachineLocationController::class, 'showFloor'])->name('machine-location.show');
+Route::post('/machine-location/swap', [MachineLocationController::class, 'swap'])->name('machine-location.swap');
+Route::post('/machine-location/move', [MachineLocationController::class, 'moveToFloor'])->name('machine-location.move');
+Route::delete('/machine-location/{machine}/remove', [MachineLocationController::class, 'removeLocation'])->name('machine-location.remove');
 
     Route::post('/notifications/mark-as-read', function () {
         auth()->user()->unreadNotifications->markAsRead();

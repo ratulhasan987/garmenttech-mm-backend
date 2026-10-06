@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Machine extends Model
@@ -14,23 +16,20 @@ class Machine extends Model
         'floor_id',
         'code',
         'sl_no',
-        'qr_code',
+        // 'qr_code',
         'notes',
         'status',
     ];
-
 
     public function model(): BelongsTo
     {
         return $this->belongsTo(MachineModel::class, 'model_id');
     }
 
-
     public function floor(): BelongsTo
     {
         return $this->belongsTo(Floor::class);
     }
-
 
     public function building(): HasOneThrough
     {
@@ -44,7 +43,6 @@ class Machine extends Model
         );
     }
 
-
     public function brand(): HasOneThrough
     {
         return $this->hasOneThrough(
@@ -56,4 +54,26 @@ class Machine extends Model
             'brand_id'     // Local key on machine_models table...
         );
     }
+
+    /**
+     * Get all location history records for the machine.
+     */
+    public function locations(): HasMany
+    {
+        return $this->hasMany(MachineLocation::class);
+    }
+
+    /**
+     * Get the current active location of the machine.
+     */
+    public function currentLocation(): HasOne
+    {
+        return $this->hasOne(MachineLocation::class)
+            ->whereNull('removed_at')
+            ->latest('assigned_at');
+    }
 }
+
+
+
+
