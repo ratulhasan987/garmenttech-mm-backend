@@ -20,7 +20,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Pagination } from '@/components/ui/pagination';
 import { Head, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Download, Edit, Trash } from 'react-feather';
 import type { Machine, MachineModelOption, FloorOption } from '@/types/machine';
 import type { PaginatedData } from '@/types/pagination';
@@ -41,15 +41,53 @@ export default function MachineIndexPage({ data, models, floors }: Props) {
     const [deleting, setDeleting] = useState(false);
     const [deleteKey, setDeleteKey] = useState(0);
 
+    // Initialize filters from URL query parameters
+    const initialParams = new URLSearchParams(window.location.search);
+    const [filters, setFilters] = useState({
+        search: initialParams.get('search') || '',
+        status: initialParams.get('status') || '',
+        model_id: initialParams.get('model_id') || '',
+        floor_id: initialParams.get('floor_id') || '',
+    });
+    const [searchTerm, setSearchTerm] = useState(filters.search);
+
+    // Debounce search input
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (searchTerm !== filters.search) {
+                applyFilters({ search: searchTerm });
+            }
+        }, 500);
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
+    const applyFilters = (newFilters: Record<string, string>) => {
+        const currentFilters = { ...filters, ...newFilters };
+        setFilters(currentFilters);
+
+        const queryParams: Record<string, string> = {};
+        Object.keys(currentFilters).forEach((key) => {
+            if (currentFilters[key]) {
+                queryParams[key] = currentFilters[key];
+            }
+        });
+
+        router.get(window.location.pathname, queryParams, {
+            preserveState: true,
+            preserveScroll: true,
+            replace: true,
+        });
+    };
+
     const handlePageChange = (page: number) => {
         router.get(
             window.location.pathname,
-            { page },
+            { ...filters, page },
             {
                 preserveState: true,
                 preserveScroll: true,
                 replace: true,
-            },
+            }
         );
     };
 
@@ -94,13 +132,61 @@ export default function MachineIndexPage({ data, models, floors }: Props) {
 
             <div className="container-fluid">
                 <Card>
-                    <CardHeader>
-                        <div className="d-flex flex-wrap gap-3 justify-content-between">
-                            <Button onClick={() => setCreateModalOpen(true)}>
-                                Add New Machine
-                            </Button>
-                        </div>
-                    </CardHeader>
+         <CardHeader>
+    <div className="d-flex flex-wrap gap-2 align-items-center">
+        {/* Filters */}
+        <input
+            type="text"
+            placeholder="Search..."
+            className="form-control"
+            style={{ minWidth: '180px', maxWidth: '200px' }}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <select
+            className="form-select"
+            style={{ maxWidth: '150px' }}
+            value={filters.status}
+            onChange={(e) => applyFilters({ status: e.target.value })}
+        >
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="retired">Retired</option>
+        </select>
+        <select
+            className="form-select"
+            style={{ maxWidth: '180px' }}
+            value={filters.model_id}
+            onChange={(e) => applyFilters({ model_id: e.target.value })}
+        >
+            <option value="">All Models</option>
+            {models.map((model) => (
+                <option key={model.id} value={model.id}>
+                    {model.name}
+                </option>
+            ))}
+        </select>
+        <select
+            className="form-select"
+            style={{ maxWidth: '180px' }}
+            value={filters.floor_id}
+            onChange={(e) => applyFilters({ floor_id: e.target.value })}
+        >
+            <option value="">All Floors</option>
+            {floors.map((floor) => (
+                <option key={floor.id} value={floor.id}>
+                    {floor.building?.name} - Floor {floor.floor_number}
+                </option>
+            ))}
+        </select>
+
+        {/* Right Side: Add Button - ms-auto pushes it to the right */}
+        <Button className="ms-auto" onClick={() => setCreateModalOpen(true)}>
+            Add New Machine
+        </Button>
+    </div>
+</CardHeader>
 
                     <CardBody>
                         <Table
@@ -255,6 +341,12 @@ function ActionCell({ qrUrl, onEdit, onDelete }: ActionCellProps) {
 }
 
 
+
+
+
+
+
+
 // import { DeleteConfirmModal } from '@/components/modals/delete-confirm-modal';
 // import PageTitle from '@/components/page-title';
 // import { TableEmpty } from '@/components/shared/table-empty';
@@ -278,7 +370,7 @@ function ActionCell({ qrUrl, onEdit, onDelete }: ActionCellProps) {
 // import { Pagination } from '@/components/ui/pagination';
 // import { Head, router } from '@inertiajs/react';
 // import { useState } from 'react';
-// import { Edit, Trash } from 'react-feather';
+// import { Download, Edit, Trash } from 'react-feather';
 // import type { Machine, MachineModelOption, FloorOption } from '@/types/machine';
 // import type { PaginatedData } from '@/types/pagination';
 // import CreateMachineModal from '@/components/pages/machine/create-machine-modal';
@@ -403,6 +495,7 @@ function ActionCell({ qrUrl, onEdit, onDelete }: ActionCellProps) {
 //                                             <TableCell>{renderStatusBadge(machine.status)}</TableCell>
 //                                             <TableCell>
 //                                                 <ActionCell
+//                                                     qrUrl={`/machine/${machine.id}/qr-code`}
 //                                                     onEdit={() => handleEdit(machine)}
 //                                                     onDelete={() => handleDelete(machine)}
 //                                                 />
@@ -468,13 +561,24 @@ function ActionCell({ qrUrl, onEdit, onDelete }: ActionCellProps) {
 // }
 
 // type ActionCellProps = {
+//     qrUrl: string;
 //     onEdit: () => void;
 //     onDelete: () => void;
 // };
 
-// function ActionCell({ onEdit, onDelete }: ActionCellProps) {
+// function ActionCell({ qrUrl, onEdit, onDelete }: ActionCellProps) {
 //     return (
 //         <ul className="d-flex align-items-center gap-2 mb-0 p-0 list-unstyled">
+//             <li>
+//                 <a 
+//                     href={qrUrl} 
+//                     download 
+//                     title="Download QR Code" 
+//                     className="btn btn-link p-0 border-0 text-success"
+//                 >
+//                     <Download size={24} />
+//                 </a>
+//             </li>
 //             <li>
 //                 <button
 //                     type="button"
@@ -498,3 +602,4 @@ function ActionCell({ qrUrl, onEdit, onDelete }: ActionCellProps) {
 //         </ul>
 //     );
 // }
+

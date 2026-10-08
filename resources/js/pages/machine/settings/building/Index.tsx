@@ -31,6 +31,10 @@ type Props = {
 };
 
 export default function BuildingIndexPage({ data }: Props) {
+    
+    
+    console.log("All Building Data", data)
+    
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
