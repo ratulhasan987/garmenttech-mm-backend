@@ -1490,6 +1490,18 @@ Route::get('/machine-location/{floor}', [MachineLocationController::class, 'show
 Route::post('/machine-location/swap', [MachineLocationController::class, 'swap'])->name('machine-location.swap');
 Route::post('/machine-location/move', [MachineLocationController::class, 'moveToFloor'])->name('machine-location.move');
 Route::delete('/machine-location/{machine}/remove', [MachineLocationController::class, 'removeLocation'])->name('machine-location.remove');
+Route::post ('/machine-location/bulk-remove',    [MachineLocationController::class, 'bulkRemoveLocation'])->name('machine-location.bulk-remove');
+
+Route::post('/machine-location/move-to-slot', [MachineLocationController::class, 'moveToSlot'])
+    ->name('machine-location.move-to-slot');
+
+
+
+
+
+
+
+
 
     Route::post('/notifications/mark-as-read', function () {
         auth()->user()->unreadNotifications->markAsRead();

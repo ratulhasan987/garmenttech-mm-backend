@@ -28,6 +28,14 @@ const floorSchema = z.object({
     floor_number: z
         .number({ invalid_type_error: 'Floor number is required.' })
         .int('Floor number must be an integer.'),
+    line_amount: z
+        .number({ invalid_type_error: 'Line amount is required.' })
+        .int('Line amount must be an integer.')
+        .min(1, 'Line amount must be at least 1.'),
+    max_machine_per_line: z
+        .number({ invalid_type_error: 'Max machines per line is required.' })
+        .int('Max machines per line must be an integer.')
+        .min(1, 'Max machines per line must be at least 1.'),
     description: z
         .string()
         .optional()
@@ -75,6 +83,8 @@ export default function EditFloorModal({
         building_id: '',
         name: '',
         floor_number: 0,
+        line_amount: 0,
+        max_machine_per_line: 0,
         description: '',
         is_active: true,
     });
@@ -89,6 +99,8 @@ export default function EditFloorModal({
                 building_id: String(floor.building_id || ''),
                 name: floor.name || '',
                 floor_number: floor.floor_number || 0,
+                line_amount: floor.line_amount || 0,
+                max_machine_per_line: floor.max_machine_per_line || 0,
                 description: floor.description || '',
                 is_active: floor.is_active ?? true,
             });
@@ -241,6 +253,46 @@ export default function EditFloorModal({
                                 onChange={(e) => setData('name', e.target.value)}
                             />
                             <FormError error={formErrors.name} />
+                        </FormField>
+                    </div>
+
+                    {/* Line Amount */}
+                    <div className="col-12 col-md-6">
+                        <FormField>
+                            <FormLabel htmlFor="edit-line_amount" required>
+                                Line Amount
+                            </FormLabel>
+                            <Input
+                                type="number"
+                                id="edit-line_amount"
+                                name="line_amount"
+                                value={data.line_amount}
+                                placeholder="e.g. 5, 10"
+                                disabled={processing}
+                                className={cn(formErrors.line_amount && 'is-invalid')}
+                                onChange={(e) => setData('line_amount', parseInt(e.target.value, 10) || 0)}
+                            />
+                            <FormError error={formErrors.line_amount} />
+                        </FormField>
+                    </div>
+
+                    {/* Max Machine Per Line */}
+                    <div className="col-12 col-md-6">
+                        <FormField>
+                            <FormLabel htmlFor="edit-max_machine_per_line" required>
+                                Max Machine Per Line
+                            </FormLabel>
+                            <Input
+                                type="number"
+                                id="edit-max_machine_per_line"
+                                name="max_machine_per_line"
+                                value={data.max_machine_per_line}
+                                placeholder="e.g. 10, 20"
+                                disabled={processing}
+                                className={cn(formErrors.max_machine_per_line && 'is-invalid')}
+                                onChange={(e) => setData('max_machine_per_line', parseInt(e.target.value, 10) || 0)}
+                            />
+                            <FormError error={formErrors.max_machine_per_line} />
                         </FormField>
                     </div>
 

@@ -277,4 +277,32 @@ class MachineService
     }
 
 
+
+
+
+    public function moveMachineToSlot(Machine $machine, int $floorId, string $slNo): MachineLocation
+{
+    return DB::transaction(function () use ($machine, $floorId, $slNo) {
+        // Slot occupied by ANOTHER machine?
+        $occupied = MachineLocation::where('floor_id', $floorId)
+            ->where('sl_no', $slNo)
+            ->whereNull('removed_at')
+            ->where('machine_id', '!=', $machine->id)
+            ->exists();
+
+        if ($occupied) {
+            throw ValidationException::withMessages([
+                'sl_no' => "Slot {$slNo} is already occupied.",
+            ]);
+        }
+
+        $this->removeFromCurrentLocation($machine, "Moved to slot {$slNo}");
+        return $this->createLocationRecord($machine, [
+            'floor_id' => $floorId,
+            'sl_no'    => $slNo,
+            'remarks'  => "Moved to slot {$slNo}",
+        ]);
+    });
+}
+
 }

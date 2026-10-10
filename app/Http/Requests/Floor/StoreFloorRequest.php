@@ -41,6 +41,8 @@ class StoreFloorRequest extends FormRequest
                 'nullable',
                 'boolean',
             ],
+            'line_amount' => ['required', 'integer', 'min:1'],
+            'max_machine_per_line' => ['required', 'integer', 'min:1'],
         ];
     }
 

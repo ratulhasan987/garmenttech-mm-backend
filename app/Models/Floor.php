@@ -17,6 +17,8 @@ class Floor extends Model
         'floor_number',
         'code',
         'description',
+        'line_amount',
+        'max_machine_per_line',
         'is_active',
     ];
 
@@ -24,6 +26,8 @@ class Floor extends Model
     {
         return [
             'floor_number' => 'integer',
+            'line_amount' => 'integer',
+            'max_machine_per_line' => 'integer',
             'is_active' => 'boolean',
         ];
     }

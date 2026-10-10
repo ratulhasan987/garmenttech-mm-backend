@@ -31,12 +31,17 @@ class MachineLocationController extends Controller
 
         // Count active machines manually via the machine_locations table
         $buildings->each(function ($building) {
-            $building->floors->each(function ($floor) {
+           
+        
+        $building->floors->each(function ($floor) {
                 $floor->active_machines_count = \App\Models\MachineLocation::where('floor_id', $floor->id)
                     ->whereNull('removed_at')
                     ->count();
             });
-        });
+        
+        
+        
+            });
 
         return Inertia::render('machine/LocationIndex', [
             'buildings' => $buildings,
@@ -68,7 +73,7 @@ class MachineLocationController extends Controller
                 ];
             });
 
-        // Fetch all floors for the dropdown selector
+        // Fetch all floors with building name for the dropdown selector
         $allFloors = Floor::with('building:id,name')->orderBy('floor_number')->get();
 
         return Inertia::render('machine/FloorPlan', [
@@ -132,4 +137,67 @@ class MachineLocationController extends Controller
         $this->machineService->removeFromCurrentLocation($machine, 'Manually unassigned from location board.');
         return redirect()->back()->with('success', 'Machine unassigned successfully.');
     }
+
+
+// 6. Bulk unassign multiple machines
+public function bulkRemoveLocation(Request $request)
+{
+    if (!auth()->user()?->can('machine.edit')) {
+        abort(403, 'Unauthorized access');
+    }
+
+    $validated = $request->validate([
+        'machine_ids'   => ['required', 'array', 'min:1'],
+        'machine_ids.*' => ['integer', 'exists:machines,id'],
+    ]);
+
+    try {
+        foreach ($validated['machine_ids'] as $machineId) {
+            $machine = Machine::find($machineId);
+            if ($machine) {
+                $this->machineService->removeFromCurrentLocation(
+                    $machine,
+                    'Manually unassigned from location board (bulk).'
+                );
+            }
+        }
+
+        return redirect()->back()->with(
+            'success',
+            count($validated['machine_ids']) . ' machine(s) unassigned successfully.'
+        );
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return redirect()->back()->withErrors($e->errors())->withInput();
+    }
+}
+
+
+
+// Move a single machine to a specific slot (empty slot)
+public function moveToSlot(Request $request)
+{
+    if (!auth()->user()?->can('machine.edit')) {
+        abort(403, 'Unauthorized access');
+    }
+
+    $validated = $request->validate([
+        'machine_id' => ['required', 'integer', 'exists:machines,id'],
+        'floor_id'   => ['required', 'integer', 'exists:floors,id'],
+        'sl_no'      => ['required', 'string'],
+    ]);
+
+    try {
+        $machine = Machine::findOrFail($validated['machine_id']);
+        $this->machineService->moveMachineToSlot(
+            $machine,
+            $validated['floor_id'],
+            $validated['sl_no']
+        );
+
+        return redirect()->back()->with('success', 'Machine moved to new slot successfully.');
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return redirect()->back()->withErrors($e->errors())->withInput();
+    }
+}
+
 }

@@ -6,6 +6,8 @@ export interface Floor {
     code: string;
     description: string | null;
     is_active: boolean;
+    line_amount: number;
+    max_machine_per_line: number;
     building?: {
         id: number;
         name: string;
