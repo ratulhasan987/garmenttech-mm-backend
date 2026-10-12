@@ -1,31 +1,26 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    /**
-     * Run the migrations.
-     */
+return new class extends Migration {
     public function up(): void
     {
         Schema::create('inventory_transactions', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('material_id'); // FK to materials
-            $table->enum('transaction_type', ['purchase','issue','return']);
-            $table->decimal('qty', 15, 2);
-            $table->decimal('unit_cost', 15, 2);
-            $table->unsignedBigInteger('project_id')->nullable();
-            $table->foreignId('journal_id')->constrained('journal_entries');
+            $table->foreignId('item_id')->constrained('items')->cascadeOnDelete();
+            $table->string('unit')->nullable();
+            $table->decimal('quantity', 16, 4);
+            $table->decimal('balance_before', 16, 4)->default(0);
+            $table->decimal('balance_after', 16, 4)->default(0);
+            $table->string('transaction_type');
+            $table->text('remarks')->nullable();
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamps();
+
+            $table->index(['item_id', 'created_at']);
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('inventory_transactions');

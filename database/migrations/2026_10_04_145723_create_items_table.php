@@ -1,45 +1,33 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('item_type_id')->constrained('item_types')->cascadeOnDelete();
+            $table->foreignId('item_category_id')->constrained('item_categories')->cascadeOnDelete();
+            $table->foreignId('brand_id')->nullable()->constrained('brands')->nullOnDelete();
+            $table->foreignId('unit_id')->nullable()->constrained('units')->nullOnDelete();
 
-            $table->foreignId('item_category_id')->constrained('item_categories');
-
-            $table->foreignId('brand_id')->nullable()->constrained('brands');
-
-            $table->string('name')->unique();
-
+            $table->string('item_code')->unique();
+            $table->string('name');
             $table->string('part_number')->nullable();
-
-            $table->string('sku')->nullable();
-
-            $table->string('barcode')->nullable();
-
+            $table->string('sku')->nullable()->unique();
+            $table->string('barcode')->nullable()->unique();
             $table->text('description')->nullable();
 
-            $table->integer('minimum_stock')->nullable();
+            $table->decimal('minimum_stock', 14, 4)->nullable();
+            $table->decimal('reorder_stock', 14, 4)->nullable();
 
-            $table->integer('reorder_stock')->nullable();
-
-            $table->string('status')->default('active');
+            $table->string('status')->default('ACTIVE'); // ACTIVE / INACTIVE
 
             $table->timestamps();
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('items');

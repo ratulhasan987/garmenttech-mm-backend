@@ -2,18 +2,18 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+
 return new class extends Migration {
     public function up(): void
     {
         Schema::create('stock_adjustment_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('stock_adjustment_id')->constrained('stock_adjustments')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->unsignedBigInteger('item_id'); // products.id
-            $table->string('unit', 50)->nullable();
-            $table->enum('adjustment_type', ['increase', 'decrease']);
-            $table->decimal('quantity', 15, 2);
+            $table->foreignId('stock_adjustment_id')->constrained('stock_adjustment_headers')->cascadeOnDelete();
+            $table->foreignId('item_id')->constrained('items')->cascadeOnDelete();
+            $table->decimal('quantity', 16, 4);
+            $table->decimal('difference', 16, 4)->default(0);
+            $table->text('reason')->nullable();
             $table->timestamps();
-            $table->index('item_id');
         });
     }
     public function down(): void
