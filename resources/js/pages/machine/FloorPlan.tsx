@@ -1,6 +1,6 @@
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
-import { ArrowLeft, ArrowRight, X, Shuffle, Trash2, AlertTriangle } from 'react-feather';
+import { ArrowLeft, ArrowRight, X, Shuffle, Trash2, AlertTriangle, PlusCircle } from 'react-feather';
 import PageTitle from '@/components/page-title';
 
 type MachineData = {
@@ -24,13 +24,21 @@ type FloorData = {
     max_machine_per_line: number;
 };
 
+type UnassignedMachineData = {
+    id: number;
+    machine_id: string;
+    model_name: string;
+    status: string;
+};
+
 type Props = {
     floor: FloorData;
     allMachines: MachineData[];
     allFloors: FloorData[];
+    unassignedMachines: UnassignedMachineData[];
 };
 
-export default function FloorPlan({ floor, allMachines, allFloors }: Props) {
+export default function FloorPlan({ floor, allMachines, allFloors, unassignedMachines }: Props) {
     const [draggingMachine, setDraggingMachine] = useState<number | null>(null);
     const [crossFloorMode, setCrossFloorMode] = useState(false);
     const [targetFloorId, setTargetFloorId] = useState<string>('');
@@ -46,6 +54,12 @@ export default function FloorPlan({ floor, allMachines, allFloors }: Props) {
     const [showUnassignModal, setShowUnassignModal] = useState(false);
 
     const [showCrossFloorAlert, setShowCrossFloorAlert] = useState(false);
+
+    // NEW state: "add unassigned machine to empty slot" feature
+    const [selectedEmptySlot, setSelectedEmptySlot] = useState<{ floorId: number; slotNo: number } | null>(null);
+    const [showUnassignedMachinesModal, setShowUnassignedMachinesModal] = useState(false);
+    const [hoveredUnassignedId, setHoveredUnassignedId] = useState<number | null>(null);
+    const [pendingAddMachine, setPendingAddMachine] = useState<UnassignedMachineData | null>(null);
 
     const currentMachines = allMachines
         .filter(m => m.floor_id === floor.id)
@@ -73,6 +87,14 @@ export default function FloorPlan({ floor, allMachines, allFloors }: Props) {
     const targetLineAmount = targetFloor?.line_amount || floor.line_amount || 0;
     const targetMaxPerLine = targetFloor?.max_machine_per_line || floor.max_machine_per_line || 0;
     const targetTotalSlots = targetLineAmount * targetMaxPerLine;
+
+    // NEW: derived — is the selected empty slot still empty? (handles data refreshes after moves)
+    const selectedEmptySlotActive = selectedEmptySlot
+        ? !allMachines.some(m =>
+            m.floor_id === selectedEmptySlot.floorId
+            && parseInt(m.sl_no) === selectedEmptySlot.slotNo
+        )
+        : false;
 
     // --- Drag start ---
     const handleDragStart = (e: React.DragEvent, machineId: number) => {
@@ -147,16 +169,35 @@ export default function FloorPlan({ floor, allMachines, allFloors }: Props) {
         );
     };
 
-    const confirmUnassign = () => {
-        if (unassignMachineIds.length === 0) return;
-        router.post('/machine-location/bulk-remove', {
-            machine_ids: unassignMachineIds,
+const confirmUnassign = () => {
+    if (unassignMachineIds.length === 0) return;
+    router.post('/machine-location/bulk-remove', {
+        machine_ids: unassignMachineIds,
+    }, {
+        preserveScroll: true,
+        preserveState: crossFloorMode, // unchanged when false; preserves cross-floor view when true
+        onSuccess: () => {
+            setShowUnassignModal(false);
+            setUnassignMachineIds([]);
+        }
+    });
+};
+
+    // NEW: confirm adding an unassigned machine into the selected empty slot
+    const confirmAddUnassigned = () => {
+        if (!pendingAddMachine || !selectedEmptySlot) return;
+        router.post('/machine-location/move-to-slot', {
+            machine_id: pendingAddMachine.id,
+            floor_id: selectedEmptySlot.floorId,
+            sl_no: String(selectedEmptySlot.slotNo),
         }, {
             preserveScroll: true,
-            preserveState: false,
+            preserveState: true,
             onSuccess: () => {
-                setShowUnassignModal(false);
-                setUnassignMachineIds([]);
+                setShowUnassignedMachinesModal(false);
+                setPendingAddMachine(null);
+                setSelectedEmptySlot(null);
+                setHoveredUnassignedId(null);
             }
         });
     };
@@ -191,15 +232,41 @@ export default function FloorPlan({ floor, allMachines, allFloors }: Props) {
         const isSource = slotFloorId === floor.id;
         const inUnassignMode = !crossFloorMode && unassignMachineIds.length > 0;
         const isUnassignSelected = machine && unassignMachineIds.includes(machine.id);
+        const isSelectedEmptySlot = !machine
+            && selectedEmptySlot?.floorId === slotFloorId
+            && selectedEmptySlot?.slotNo === slotNo;
 
         return (
             <div
                 key={slotNo}
+                // onClick={() => {
+                //     if (machine) {
+                //         if (!crossFloorMode) {
+                //             toggleUnassignSelect(machine.id);
+                //         }
+                //     } else {
+                //         // Empty slot clicked -> select/deselect for the "add unassigned" flow
+                //         if (isSelectedEmptySlot) {
+                //             setSelectedEmptySlot(null);
+                //         } else {
+                //             setSelectedEmptySlot({ floorId: slotFloorId, slotNo });
+                //         }
+                //     }
+                // }}
+
                 onClick={() => {
-                    if (!crossFloorMode && machine) {
-                        toggleUnassignSelect(machine.id);
-                    }
-                }}
+    if (machine) {
+        // Allow machine selection for unassign in BOTH modes (cross-floor + non-cross-floor)
+        toggleUnassignSelect(machine.id);
+    } else {
+        // Empty slot clicked -> select/deselect for the "add unassigned" flow
+        if (isSelectedEmptySlot) {
+            setSelectedEmptySlot(null);
+        } else {
+            setSelectedEmptySlot({ floorId: slotFloorId, slotNo });
+        }
+    }
+}}
                 onDrop={(e) => {
                     if (crossFloorMode) {
                         const draggedMachineId = parseInt(e.dataTransfer.getData('machineId'));
@@ -223,15 +290,17 @@ export default function FloorPlan({ floor, allMachines, allFloors }: Props) {
                 className={`d-flex flex-column align-items-center justify-content-center rounded border border-2 position-relative ${
                     machine
                         ? (isUnassignSelected ? 'border-primary bg-info text-white' : 'border-secondary bg-light')
-                        : 'border-dashed'
+                        : (isSelectedEmptySlot ? 'border-primary border-dashed' : 'border-dashed')
                 }`}
                 style={{
                     minHeight: 'clamp(65px, 14vw, 110px)',
                     padding: 'clamp(2px, 0.6vw, 8px)',
                     cursor: machine
                         ? (crossFloorMode ? 'grab' : (inUnassignMode ? 'pointer' : 'grab'))
-                        : 'default',
-                    backgroundColor: machine ? undefined : '#f1f3f5',
+                        : 'pointer',
+                    backgroundColor: machine
+                        ? undefined
+                        : (isSelectedEmptySlot ? '#fff3cd' : '#f1f3f5'),
                     touchAction: 'manipulation',
                 }}
             >
@@ -317,29 +386,46 @@ export default function FloorPlan({ floor, allMachines, allFloors }: Props) {
                         <span className="d-inline d-sm-none">Back</span>
                     </button>
 
-                    {!crossFloorMode ? (
-                        <div className="d-flex gap-2 flex-wrap">
-                            {unassignMachineIds.length > 0 && (
-                                <>
-                                    <button onClick={() => setShowUnassignModal(true)} className="btn btn-danger btn-sm">
-                                        <Trash2 size={16} className="me-1" /> Unassign ({unassignMachineIds.length})
-                                    </button>
-                                    <button onClick={() => setUnassignMachineIds([])} className="btn btn-outline-secondary btn-sm">
-                                        <X size={16} className="me-1" /> Clear
-                                    </button>
-                                </>
-                            )}
-                            <button onClick={() => setCrossFloorMode(true)} className="btn btn-primary btn-sm">
-                                <Shuffle size={16} className="me-1" /> <span className="d-none d-sm-inline">Change with other floor</span>
-                                <span className="d-inline d-sm-none">Other Floor</span>
-                            </button>
-                        </div>
-                    ) : (
-                        <button onClick={() => setCrossFloorMode(false)} className="btn btn-danger btn-sm">
-                            <X size={16} className="me-1" /> <span className="d-none d-sm-inline">Exit Cross-Floor Mode</span>
-                            <span className="d-inline d-sm-none">Exit</span>
-                        </button>
-                    )}
+                <div className="d-flex gap-2 flex-wrap align-items-center">
+    {/* "Unassigned Machines" button */}
+    <button
+        onClick={() => selectedEmptySlotActive && setShowUnassignedMachinesModal(true)}
+        disabled={!selectedEmptySlotActive}
+        className="btn btn-warning btn-sm"
+        title={selectedEmptySlotActive ? `Add to slot #${selectedEmptySlot?.slotNo}` : 'Click an empty slot first'}
+    >
+        <PlusCircle size={16} className="me-1" />
+        <span className="d-none d-sm-inline">Unassigned Machines</span>
+        <span className="d-inline d-sm-none">Unassigned</span>
+        {selectedEmptySlotActive && (
+            <span className="badge bg-dark ms-1">#{selectedEmptySlot?.slotNo}</span>
+        )}
+    </button>
+
+    {/* Unassign / Clear buttons — now visible in BOTH modes whenever machines are selected */}
+    {unassignMachineIds.length > 0 && (
+        <>
+            <button onClick={() => setShowUnassignModal(true)} className="btn btn-danger btn-sm">
+                <Trash2 size={16} className="me-1" /> Unassign ({unassignMachineIds.length})
+            </button>
+            <button onClick={() => setUnassignMachineIds([])} className="btn btn-outline-secondary btn-sm">
+                <X size={16} className="me-1" /> Clear
+            </button>
+        </>
+    )}
+
+    {!crossFloorMode ? (
+        <button onClick={() => setCrossFloorMode(true)} className="btn btn-primary btn-sm">
+            <Shuffle size={16} className="me-1" /> <span className="d-none d-sm-inline">Change with other floor</span>
+            <span className="d-inline d-sm-none">Other Floor</span>
+        </button>
+    ) : (
+        <button onClick={() => setCrossFloorMode(false)} className="btn btn-danger btn-sm">
+            <X size={16} className="me-1" /> <span className="d-none d-sm-inline">Exit Cross-Floor Mode</span>
+            <span className="d-inline d-sm-none">Exit</span>
+        </button>
+    )}
+</div>
                 </div>
 
                 {!crossFloorMode && unassignMachineIds.length > 0 && (
@@ -356,6 +442,19 @@ export default function FloorPlan({ floor, allMachines, allFloors }: Props) {
                     </div>
                 )}
 
+                {/* NEW: hint when an empty slot is selected for the add flow */}
+                {selectedEmptySlotActive && (
+                    <div className="alert alert-warning py-2 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2" style={{ fontSize: 'clamp(0.75rem, 3vw, 0.875rem)' }}>
+                        <span>
+                            <strong>Add Mode:</strong> Empty slot #{selectedEmptySlot?.slotNo} selected.
+                            Click <em>Unassigned Machines</em> to pick a machine to place there.
+                        </span>
+                        <button className="btn btn-sm btn-outline-secondary" onClick={() => setSelectedEmptySlot(null)}>
+                            <X size={14} className="me-1" /> Clear selection
+                        </button>
+                    </div>
+                )}
+
                 {!crossFloorMode ? (
                     <div className="card shadow-sm">
                         <div className="card-header bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -363,7 +462,7 @@ export default function FloorPlan({ floor, allMachines, allFloors }: Props) {
                                 Floor Layout — {floor.line_amount} cols × {floor.max_machine_per_line} rows
                                 <small className="text-muted ms-2 d-none d-md-inline">({totalSlots} slots)</small>
                             </strong>
-                            <small className="text-muted d-none d-md-inline">Drag to empty slot to place • Drag onto a machine to swap</small>
+                            <small className="text-muted d-none d-md-inline">Drag to empty slot to place • Drag onto a machine to swap • Click empty slot to add unassigned</small>
                         </div>
                         <div
                             className="card-body position-relative"
@@ -380,11 +479,6 @@ export default function FloorPlan({ floor, allMachines, allFloors }: Props) {
                                     Floor grid not configured (line_amount / max_machine_per_line missing).
                                 </div>
                             )}
-                            {/* <div className="text-center mt-3">
-                                <div className="alert alert-dark d-inline-block mb-0 px-3 py-1">
-                                    <strong style={{ fontSize: 'clamp(0.75rem, 2.5vw, 1rem)' }}>GATE</strong>
-                                </div>
-                            </div> */}
                         </div>
                     </div>
                 ) : (
@@ -530,6 +624,121 @@ export default function FloorPlan({ floor, allMachines, allFloors }: Props) {
                                 <button className="btn btn-danger btn-sm" onClick={confirmUnassign}>
                                     Yes ({unassignMachineIds.length})
                                 </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* NEW: Unassigned Machines Picker Modal */}
+            {showUnassignedMachinesModal && selectedEmptySlot && selectedEmptySlotActive && (
+                <div className="modal fade show d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                    <div className="modal-dialog modal-dialog-centered modal-lg">
+                        <div className="modal-content">
+                            <div className="modal-header p-2 p-md-3">
+                                <h5 className="modal-title d-flex align-items-center gap-2" style={{ fontSize: 'clamp(0.85rem, 3vw, 1.25rem)' }}>
+                                    <PlusCircle size={18} /> Unassigned Machines
+                                </h5>
+                                <button type="button" className="btn-close" onClick={() => setShowUnassignedMachinesModal(false)}></button>
+                            </div>
+                            <div className="modal-body p-2 p-md-3">
+                                <div className="alert alert-info py-2 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2" style={{ fontSize: 'clamp(0.75rem, 2.5vw, 0.875rem)' }}>
+                                    <span>
+                                        <strong>Target slot:</strong> Floor ID {selectedEmptySlot.floorId} • Slot #{selectedEmptySlot.slotNo}
+                                    </span>
+                                    <button className="btn btn-sm btn-outline-secondary" onClick={() => {
+                                        setShowUnassignedMachinesModal(false);
+                                        setSelectedEmptySlot(null);
+                                    }}>
+                                        <X size={14} className="me-1" /> Cancel
+                                    </button>
+                                </div>
+
+                                {unassignedMachines.length === 0 ? (
+                                    <p className="text-center text-muted my-4" style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1rem)' }}>
+                                        No unassigned machines available.
+                                    </p>
+                                ) : (
+                                    <div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+                                        <div className="row g-2 g-md-3">
+                                            {unassignedMachines.map(m => (
+                                                <div key={m.id} className="col-6 col-md-4 col-lg-3">
+                                                    <div
+                                                        className="card h-100 text-center position-relative overflow-hidden"
+                                                        style={{ cursor: 'pointer', minHeight: '120px' }}
+                                                        onMouseEnter={() => setHoveredUnassignedId(m.id)}
+                                                        onMouseLeave={() => setHoveredUnassignedId(null)}
+                                                        onClick={() => setPendingAddMachine(m)}
+                                                    >
+                                                        <div
+                                                            className="card-body p-2 d-flex flex-column align-items-center justify-content-center"
+                                                            style={{
+                                                                filter: hoveredUnassignedId === m.id ? 'blur(2px)' : 'none',
+                                                                transition: 'filter 0.15s ease',
+                                                            }}
+                                                        >
+                                                            <strong style={{ fontSize: 'clamp(0.7rem, 2vw, 0.9rem)' }}>
+                                                                {m.machine_id}
+                                                            </strong>
+                                                            <small className="text-muted" style={{ fontSize: 'clamp(0.6rem, 1.8vw, 0.75rem)' }}>
+                                                                {m.model_name}
+                                                            </small>
+                                                            <span className="badge bg-secondary mt-1" style={{ fontSize: 'clamp(0.55rem, 1.5vw, 0.7rem)' }}>
+                                                                {m.status}
+                                                            </span>
+                                                        </div>
+                                                        {/* Hover overlay with "+ Add" text */}
+                                                        <div
+                                                            className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center"
+                                                            style={{
+                                                                background: 'rgba(0,0,0,0.55)',
+                                                                color: 'white',
+                                                                opacity: hoveredUnassignedId === m.id ? 1 : 0,
+                                                                transition: 'opacity 0.15s ease',
+                                                                pointerEvents: 'none',
+                                                            }}
+                                                        >
+                                                            <span style={{ fontSize: 'clamp(0.9rem, 2.5vw, 1.2rem)', fontWeight: 'bold' }}>
+                                                                + Add
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* NEW: Add Unassigned Machine Confirmation Modal (stacks on top of picker) */}
+            {pendingAddMachine && selectedEmptySlot && (
+                <div className="modal fade show d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1080 }}>
+                    <div className="modal-dialog modal-dialog-centered modal-sm">
+                        <div className="modal-content">
+                            <div className="modal-header p-2 p-md-3">
+                                <h5 className="modal-title" style={{ fontSize: 'clamp(0.85rem, 3vw, 1.25rem)' }}>
+                                    Confirm Add
+                                </h5>
+                                <button type="button" className="btn-close" onClick={() => setPendingAddMachine(null)}></button>
+                            </div>
+                            <div className="modal-body p-2 p-md-3">
+                                <p style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1rem)' }}>
+                                    Add this machine to slot?
+                                </p>
+                                <h6 className="text-success" style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.1rem)' }}>
+                                    {pendingAddMachine.machine_id}
+                                </h6>
+                                <small className="text-muted d-block" style={{ fontSize: 'clamp(0.7rem, 2vw, 0.8rem)' }}>
+                                    {pendingAddMachine.model_name} — Slot #{selectedEmptySlot.slotNo}
+                                </small>
+                            </div>
+                            <div className="modal-footer p-2 p-md-3">
+                                <button className="btn btn-outline-secondary btn-sm" onClick={() => setPendingAddMachine(null)}>Cancel</button>
+                                <button className="btn btn-success btn-sm" onClick={confirmAddUnassigned}>Confirm</button>
                             </div>
                         </div>
                     </div>

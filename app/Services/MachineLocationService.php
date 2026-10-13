@@ -34,34 +34,85 @@ class MachineLocationService
     /**
      * Build the floor plan page data: floor + all active machines (mapped) + all floors.
      */
-    public function getFloorPlanData(Floor $floor): array
-    {
-        $floor->load('building');
+    // public function getFloorPlanData(Floor $floor): array
+    // {
+    //     $floor->load('building');
 
-        $allMachines = Machine::with(['model', 'currentLocation.floor.building'])
-            ->whereHas('currentLocation')
-            ->get()
-            ->map(function ($machine) {
-                return [
-                    'id'            => $machine->id,
-                    'machine_id'    => $machine->machine_id,
-                    'model_name'    => $machine->model->name ?? 'N/A',
-                    'status'        => $machine->status,
-                    'sl_no'         => $machine->currentLocation->sl_no,
-                    'floor_id'      => $machine->currentLocation->floor_id,
-                    'building_name' => $machine->currentLocation->floor->building->name ?? 'N/A',
-                    'floor_number'  => $machine->currentLocation->floor->floor_number ?? 0,
-                ];
-            });
+    //     $allMachines = Machine::with(['model', 'currentLocation.floor.building'])
+    //         ->whereHas('currentLocation')
+    //         ->get()
+    //         ->map(function ($machine) {
+    //             return [
+    //                 'id'            => $machine->id,
+    //                 'machine_id'    => $machine->machine_id,
+    //                 'model_name'    => $machine->model->name ?? 'N/A',
+    //                 'status'        => $machine->status,
+    //                 'sl_no'         => $machine->currentLocation->sl_no,
+    //                 'floor_id'      => $machine->currentLocation->floor_id,
+    //                 'building_name' => $machine->currentLocation->floor->building->name ?? 'N/A',
+    //                 'floor_number'  => $machine->currentLocation->floor->floor_number ?? 0,
+    //             ];
+    //         });
 
-        $allFloors = Floor::with('building:id,name')->orderBy('floor_number')->get();
+    //     $allFloors = Floor::with('building:id,name')->orderBy('floor_number')->get();
 
-        return [
-            'floor'       => $floor,
-            'allMachines' => $allMachines,
-            'allFloors'   => $allFloors,
-        ];
-    }
+    //     return [
+    //         'floor'       => $floor,
+    //         'allMachines' => $allMachines,
+    //         'allFloors'   => $allFloors,
+    //     ];
+    // }
+
+
+
+
+
+
+
+public function getFloorPlanData(Floor $floor): array
+{
+    $floor->load('building');
+
+    $allMachines = Machine::with(['model', 'currentLocation.floor.building'])
+        ->whereHas('currentLocation')
+        ->get()
+        ->map(function ($machine) {
+            return [
+                'id'            => $machine->id,
+                'machine_id'    => $machine->machine_id,
+                'model_name'    => $machine->model->name ?? 'N/A',
+                'status'        => $machine->status,
+                'sl_no'         => $machine->currentLocation->sl_no,
+                'floor_id'      => $machine->currentLocation->floor_id,
+                'building_name' => $machine->currentLocation->floor->building->name ?? 'N/A',
+                'floor_number'  => $machine->currentLocation->floor->floor_number ?? 0,
+            ];
+        });
+
+    $allFloors = Floor::with('building:id,name')->orderBy('floor_number')->get();
+
+    // NEW: machines that have NO active location, for the "add to empty slot" picker
+    $unassignedMachines = Machine::with(['model'])
+        ->whereDoesntHave('currentLocation')
+        ->get()
+        ->map(function ($machine) {
+            return [
+                'id'         => $machine->id,
+                'machine_id' => $machine->machine_id,
+                'model_name' => $machine->model->name ?? 'N/A',
+                'status'     => $machine->status,
+            ];
+        });
+
+    return [
+        'floor'              => $floor,
+        'allMachines'        => $allMachines,
+        'allFloors'          => $allFloors,
+        'unassignedMachines' => $unassignedMachines,
+    ];
+}
+
+
 
     /**
      * Assign a brand-new location to a machine that has no active location.
