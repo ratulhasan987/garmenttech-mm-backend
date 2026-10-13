@@ -130,7 +130,7 @@ class MachineService
      * Generate QR Code image for download
      * Returns SVG or PNG content
      */
-    public function generateQrCode(Machine $machine, string $format = 'svg', int $size = 300)
+    public function generateQrCode(Machine $machine, string $format = 'png', int $size = 300)
     {
         $content = $machine->machine_id;
 

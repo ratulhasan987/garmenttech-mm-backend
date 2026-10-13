@@ -143,7 +143,7 @@ class MachineController extends Controller
             return ApiResponse::error(message: 'Unauthorized access', status: 403);
         }
 
-        $format = request()->input('format', 'svg'); // svg or png
+        $format = request()->input('format', 'png'); // svg or png
         $size = (int) request()->input('size', 400);
 
         $qrContent = $this->machineService->generateQrCode($machine, $format, $size);
