@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/form/input';
 import { AppModal } from '@/components/ui/modal/app-modal';
 import { cn } from '@/lib/utils';
 import type { BuildingOption } from '@/types/floor';
+import { NumberInput } from '@/components/ui/form/number-input';
 
 /*
 |--------------------------------------------------------------------------
@@ -203,15 +204,14 @@ export default function CreateFloorModal({
                             <FormLabel htmlFor="floor_number" required>
                                 Floor Number
                             </FormLabel>
-                            <Input
-                                type="number"
+                            <NumberInput
                                 id="floor_number"
                                 name="floor_number"
                                 value={data.floor_number}
                                 placeholder="e.g. 1, 2, -1 for Basement"
                                 disabled={processing}
                                 className={cn(formErrors.floor_number && 'is-invalid')}
-                                onChange={(e) => setData('floor_number', parseInt(e.target.value, 10) || 0)}
+                                onValueChange={(value) => setData('floor_number', value)}
                             />
                             <FormError error={formErrors.floor_number} />
                         </FormField>
@@ -243,15 +243,14 @@ export default function CreateFloorModal({
                             <FormLabel htmlFor="line_amount" required>
                                 Line Amount
                             </FormLabel>
-                            <Input
-                                type="number"
+                            <NumberInput
                                 id="line_amount"
                                 name="line_amount"
                                 value={data.line_amount}
                                 placeholder="e.g. 5, 10"
                                 disabled={processing}
                                 className={cn(formErrors.line_amount && 'is-invalid')}
-                                onChange={(e) => setData('line_amount', parseInt(e.target.value, 10) || 0)}
+                                onValueChange={(value) => setData('line_amount', value)}
                             />
                             <FormError error={formErrors.line_amount} />
                         </FormField>
@@ -263,15 +262,14 @@ export default function CreateFloorModal({
                             <FormLabel htmlFor="max_machine_per_line" required>
                                 Max Machine Per Line
                             </FormLabel>
-                            <Input
-                                type="number"
+                            <NumberInput
                                 id="max_machine_per_line"
                                 name="max_machine_per_line"
                                 value={data.max_machine_per_line}
                                 placeholder="e.g. 10, 20"
                                 disabled={processing}
                                 className={cn(formErrors.max_machine_per_line && 'is-invalid')}
-                                onChange={(e) => setData('max_machine_per_line', parseInt(e.target.value, 10) || 0)}
+                                onValueChange={(value) => setData('max_machine_per_line', value)}
                             />
                             <FormError error={formErrors.max_machine_per_line} />
                         </FormField>

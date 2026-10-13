@@ -33,7 +33,8 @@ export const NumberInput =
     >(
         (
             {
-                value = 0,
+                // value = 0,
+                value,
                 onValueChange,
                 zeroAsEmpty = true,
                 onFocus,
@@ -68,16 +69,23 @@ export const NumberInput =
                 if (
                     currentValue === null ||
                     currentValue ===
-                        undefined
+                    undefined
                 ) {
                     return '';
                 }
+
+                // if (
+                //     zeroAsEmpty &&
+                //     currentValue === 0
+                // ) {
+                //     return '0';
+                // }
 
                 if (
                     zeroAsEmpty &&
                     currentValue === 0
                 ) {
-                    return '0';
+                    return '';
                 }
 
                 return String(

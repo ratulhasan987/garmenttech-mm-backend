@@ -184,6 +184,47 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         ],
     },
 
+
+
+    // Item Start 
+    
+    {
+        id: 'item_section',
+        title: 'Item',
+        items: [
+            {
+                id: 'item',
+                title: 'Item',
+                icon: { id: 'stroke-project', type: 'fill' },
+                path: '/item',
+            },
+            {
+                id: 'item_setup',
+                title: 'Item Setup',
+                icon: { id: 'stroke-project', type: 'fill' },
+                subItems: [
+                    {
+                        id: 'item_type_setup',
+                        title: 'Item Type',
+                        path: '/item-type',
+                    },
+                    {
+                        id: 'item_category_setup',
+                        title: 'Item Category',
+                        path: '/item-category',
+                    },
+                    {
+                        id: 'unit_setup',
+                        title: 'Unit',
+                        path: '/unit',
+                    },
+                ],
+            },
+        ],
+    },
+    // Item End 
+
+
     // Machine start 
 
 
@@ -207,7 +248,7 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
              {
             id: 'machine_location',
             title: 'Machine Location',
-            icon: { id: 'stroke-project', type: 'fill' }, // Change icon as needed
+            icon: { id: 'stroke-project', type: 'fill' }, 
             path: '/machine-location',
         },
 

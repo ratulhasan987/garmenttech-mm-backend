@@ -1498,7 +1498,13 @@ Route::post('/machine-location/move-to-slot', [MachineLocationController::class,
 
 
 
+// Item CRUD
+Route::resource('items', ItemController::class);
 
+// Item Configuration (Setup)
+Route::resource('item-types', ItemTypeController::class);
+Route::resource('item-categories', ItemCategoryController::class);
+Route::resource('units', UnitController::class);
 
 
 

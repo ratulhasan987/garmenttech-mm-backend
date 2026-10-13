@@ -101,7 +101,7 @@ export default function BrandIndexPage({
         }
 
         router.delete(
-            `/operations/product-brands/${selectedBrand.id}`,
+            `/brand/${selectedBrand.id}`,
             {
                 preserveScroll: true,
 
