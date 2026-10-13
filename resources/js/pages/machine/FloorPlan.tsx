@@ -380,11 +380,11 @@ export default function FloorPlan({ floor, allMachines, allFloors }: Props) {
                                     Floor grid not configured (line_amount / max_machine_per_line missing).
                                 </div>
                             )}
-                            <div className="text-center mt-3">
+                            {/* <div className="text-center mt-3">
                                 <div className="alert alert-dark d-inline-block mb-0 px-3 py-1">
                                     <strong style={{ fontSize: 'clamp(0.75rem, 2.5vw, 1rem)' }}>GATE</strong>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 ) : (

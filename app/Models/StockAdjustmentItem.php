@@ -19,10 +19,10 @@ class StockAdjustmentItem extends Model
         ];
     }
 
-    public function adjustment(): BelongsTo
-    {
-        return $this->belongsTo(StockAdjustmentHeader::class, 'stock_adjustment_id');
-    }
+    // public function adjustment(): BelongsTo
+    // {
+    //     return $this->belongsTo(StockAdjustmentHeader::class, 'stock_adjustment_id');
+    // }
 
     public function item(): BelongsTo
     {

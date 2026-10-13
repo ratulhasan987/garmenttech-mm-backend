@@ -22,6 +22,7 @@ return new class extends Migration {
                 ->nullOnDelete();
 
             $table->string('name')->unique();
+            $table->string('code')->unique();
 
             $table->text('description')->nullable();
 

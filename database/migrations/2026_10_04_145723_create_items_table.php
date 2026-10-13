@@ -20,8 +20,8 @@ return new class extends Migration {
             $table->string('barcode')->nullable()->unique();
             $table->text('description')->nullable();
 
-            $table->decimal('minimum_stock', 14, 4)->nullable();
-            $table->decimal('reorder_stock', 14, 4)->nullable();
+            $table->decimal('minimum_stock', 14, 2)->nullable();
+            $table->decimal('reorder_stock', 14, 2)->nullable();
 
             $table->string('status')->default('ACTIVE'); // ACTIVE / INACTIVE
 

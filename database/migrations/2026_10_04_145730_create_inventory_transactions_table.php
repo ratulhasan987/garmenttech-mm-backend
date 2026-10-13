@@ -26,3 +26,6 @@ return new class extends Migration {
         Schema::dropIfExists('inventory_transactions');
     }
 };
+
+
+// 2025_09_16_045754_create_inventory_transactions_table.php

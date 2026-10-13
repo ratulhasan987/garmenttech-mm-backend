@@ -14,13 +14,7 @@ class Item extends Model
         'description', 'minimum_stock', 'reorder_stock', 'status',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'minimum_stock' => 'decimal:4',
-            'reorder_stock' => 'decimal:4',
-        ];
-    }
+
 
     public function itemType(): BelongsTo
     {
