@@ -64,10 +64,13 @@ use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\Web\BrandController;
 use App\Http\Controllers\Web\BuildingController;
 use App\Http\Controllers\Web\FloorController;
+use App\Http\Controllers\web\ItemCategoriesController;
+use App\Http\Controllers\web\ItemsController;
+use App\Http\Controllers\web\ItemTypesController;
 use App\Http\Controllers\Web\MachineCategoryController;
 use App\Http\Controllers\Web\MachineController;
-use App\Http\Controllers\Web\MachineModelController;
 use App\Http\Controllers\Web\MachineLocationController;
+use App\Http\Controllers\Web\MachineModelController;
 use App\Http\Controllers\WifiIpController;
 use App\Http\Controllers\WorkFromHomeController;
 use Illuminate\Support\Facades\Route;
@@ -1483,31 +1486,34 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // New Route for QR Code Download
     Route::get('/machine/{machine}/qr-code', [MachineController::class, 'downloadQr'])->name('machine.qr-code');
 
+    // Machine Location Routes
+    Route::get('/machine-location', [MachineLocationController::class, 'index'])->name('machine-location.index');
+    Route::get('/machine-location/{floor}', [MachineLocationController::class, 'showFloor'])->name('machine-location.show');
+    Route::post('/machine-location/swap', [MachineLocationController::class, 'swap'])->name('machine-location.swap');
+    Route::post('/machine-location/move', [MachineLocationController::class, 'moveToFloor'])->name('machine-location.move');
+    Route::delete('/machine-location/{machine}/remove', [MachineLocationController::class, 'removeLocation'])->name('machine-location.remove');
+    Route::post('/machine-location/bulk-remove', [MachineLocationController::class, 'bulkRemoveLocation'])->name('machine-location.bulk-remove');
 
-// Machine Location Routes
-Route::get('/machine-location', [MachineLocationController::class, 'index'])->name('machine-location.index');
-Route::get('/machine-location/{floor}', [MachineLocationController::class, 'showFloor'])->name('machine-location.show');
-Route::post('/machine-location/swap', [MachineLocationController::class, 'swap'])->name('machine-location.swap');
-Route::post('/machine-location/move', [MachineLocationController::class, 'moveToFloor'])->name('machine-location.move');
-Route::delete('/machine-location/{machine}/remove', [MachineLocationController::class, 'removeLocation'])->name('machine-location.remove');
-Route::post ('/machine-location/bulk-remove',    [MachineLocationController::class, 'bulkRemoveLocation'])->name('machine-location.bulk-remove');
+    Route::post('/machine-location/move-to-slot', [MachineLocationController::class, 'moveToSlot'])
+        ->name('machine-location.move-to-slot');
 
-Route::post('/machine-location/move-to-slot', [MachineLocationController::class, 'moveToSlot'])
-    ->name('machine-location.move-to-slot');
+    // Item Types
+    Route::get('/item-type', [ItemTypesController::class, 'index'])->name('item.type.index');
+    Route::post('/item-type', [ItemTypesController::class, 'store'])->name('item.type.store');
+    Route::put('/item-type/{item_type}', [ItemTypesController::class, 'update'])->name('item.type.update');
+    Route::delete('/item-type/{item_type}', [ItemTypesController::class, 'destroy'])->name('item.type.destroy');
 
+    // Item Categories
+    Route::get('/item-category', [ItemCategoriesController::class, 'index'])->name('item.category.index');
+    Route::post('/item-category', [ItemCategoriesController::class, 'store'])->name('item.category.store');
+    Route::put('/item-category/{item_category}', [ItemCategoriesController::class, 'update'])->name('item.category.update');
+    Route::delete('/item-category/{item_category}', [ItemCategoriesController::class, 'destroy'])->name('item.category.destroy');
 
-
-
-// Item CRUD
-Route::resource('items', ItemController::class);
-
-// Item Configuration (Setup)
-Route::resource('item-types', ItemTypeController::class);
-Route::resource('item-categories', ItemCategoryController::class);
-Route::resource('units', UnitController::class);
-
-
-
+    // Items
+    Route::get('/item', [ItemsController::class, 'index'])->name('item.index');
+    Route::post('/item', [ItemsController::class, 'store'])->name('item.store');
+    Route::put('/item/{item}', [ItemsController::class, 'update'])->name('item.update');
+    Route::delete('/item/{item}', [ItemsController::class, 'destroy'])->name('item.destroy');
 
     Route::post('/notifications/mark-as-read', function () {
         auth()->user()->unreadNotifications->markAsRead();

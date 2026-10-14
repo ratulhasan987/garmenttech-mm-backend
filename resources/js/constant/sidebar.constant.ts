@@ -186,23 +186,34 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
 
 
 
+
+
+
+
     // Item Start 
     
-    {
+
+      {
         id: 'item_section',
         title: 'Item',
+
         items: [
+            // Products
             {
                 id: 'item',
                 title: 'Item',
-                icon: { id: 'stroke-project', type: 'fill' },
-                path: '/item',
-            },
-            {
-                id: 'item_setup',
-                title: 'Item Setup',
-                icon: { id: 'stroke-project', type: 'fill' },
+
+                icon: {
+                    id: 'stroke-project',
+                    type: 'fill',
+                },
+
                 subItems: [
+                    {
+                        id: 'item',
+                        title: 'Item',
+                        path: '/item',
+                    },
                     {
                         id: 'item_type_setup',
                         title: 'Item Type',
@@ -213,16 +224,18 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
                         title: 'Item Category',
                         path: '/item-category',
                     },
-                    {
-                        id: 'unit_setup',
-                        title: 'Unit',
-                        path: '/unit',
-                    },
+             
                 ],
             },
+
+
         ],
     },
+  
+
     // Item End 
+
+
 
 
     // Machine start 
@@ -456,6 +469,9 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
             },
         ],
     },
+  
+  
+  
     {
         id: 'purchase_module',
         title: 'Purchase',

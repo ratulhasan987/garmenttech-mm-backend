@@ -3,6 +3,7 @@
 namespace App\Http\Requests\MachineCategory;
 
 use App\Http\Responses\ApiResponse;
+use App\Models\MachineCategory;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
@@ -14,11 +15,28 @@ class UpdateMachineCategoryRequest extends FormRequest
         return $this->user()?->can('machine_category.edit') ?? true;
     }
 
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        // React sends "" when "None (Root Category)" is selected.
+        // Convert it to null so it doesn't fail the 'integer' validation rule.
+        $this->merge([
+            'parent_id' => $this->parent_id === '' ? null : $this->parent_id,
+        ]);
+    }
+
     public function rules(): array
     {
-        // Get category ID from route parameter (e.g. /api/machine-categories/{machine_category})
-        $category = $this->route('machine_category');
-        $categoryId = is_object($category) ? $category->id : $category;
+        // Robustly fetch the ID to handle various route parameter names ({id}, {machine_category}, etc.)
+        $category = $this->route('machine_category') 
+            ?? $this->route('machineCategory') 
+            ?? $this->route('id');
+            
+        $categoryId = $category instanceof MachineCategory 
+            ? $category->id 
+            : $category;
 
         return [
             'name' => [
@@ -32,7 +50,12 @@ class UpdateMachineCategoryRequest extends FormRequest
                 'nullable',
                 'integer',
                 'exists:machine_categories,id',
-                Rule::notIn([$categoryId]), // Prevents setting parent_id to itself
+                // Use a closure to reliably prevent self-parenting
+                function ($attribute, $value, $fail) use ($categoryId) {
+                    if ($value !== null && (int) $value === (int) $categoryId) {
+                        $fail('A category cannot be its own parent.');
+                    }
+                },
             ],
             'description' => [
                 'nullable',
@@ -50,7 +73,6 @@ class UpdateMachineCategoryRequest extends FormRequest
         return [
             'name.unique' => 'A machine category with this name already exists.',
             'parent_id.exists' => 'The selected parent category does not exist.',
-            'parent_id.not_in' => 'A category cannot be its own parent.',
         ];
     }
 
@@ -58,7 +80,8 @@ class UpdateMachineCategoryRequest extends FormRequest
     {
         throw new HttpResponseException(
             ApiResponse::error(
-                message: 'You do not have permission to create a machine category.',
+                // Fixed typo: changed 'create' to 'update'
+                message: 'You do not have permission to update a machine category.',
                 status: 403
             )
         );
