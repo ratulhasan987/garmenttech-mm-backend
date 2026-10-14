@@ -224,6 +224,11 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
                         title: 'Item Category',
                         path: '/item-category',
                     },
+                    {
+                        id: 'item_attribute_setup',
+                        title: 'Attribute',
+                        path: '/attribute',
+                    },
              
                 ],
             },

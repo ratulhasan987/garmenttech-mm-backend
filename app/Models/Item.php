@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -12,9 +13,15 @@ class Item extends Model
         'item_type_id', 'item_category_id', 'brand_id', 'unit_id',
         'item_code', 'name', 'part_number', 'sku', 'barcode',
         'description', 'minimum_stock', 'reorder_stock', 'status',
+        'attributes', // Make sure this is here
     ];
 
-
+    protected function casts(): array
+    {
+        return [
+            'attributes' => 'array', // Cast to array
+        ];
+    }
 
     public function itemType(): BelongsTo
     {

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Services;
-
+use App\Models\Attribute;
 use App\Models\Brand;
 use App\Models\Item;
 use App\Models\ItemCategory;
@@ -26,6 +26,8 @@ class ItemService
             'itemCategories' => ItemCategory::select('id', 'name')->orderBy('name')->get(),
             'brands' => Brand::select('id', 'name')->orderBy('name')->get(),
             'units' => Unit::select('id', 'name')->orderBy('name')->get(),
+            'attributes' => Attribute::select('id', 'name', 'type', 'options')->orderBy('name')->get(),
+
         ];
     }
 

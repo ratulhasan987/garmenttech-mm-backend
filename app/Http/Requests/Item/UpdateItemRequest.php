@@ -31,6 +31,11 @@ class UpdateItemRequest extends FormRequest
             'minimum_stock' => ['nullable', 'integer', 'min:0'],
             'reorder_stock' => ['nullable', 'integer', 'min:0'],
             'status' => ['nullable', 'boolean'],
+
+             'attributes' => ['nullable', 'array'],
+            'attributes.*.id' => ['required', 'exists:attributes,id'],
+            'attributes.*.value' => ['required'], // value can be string, number, or boolean
+
         ];
     }
 }

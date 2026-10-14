@@ -12,7 +12,7 @@ import { Card, CardBody, CardFooter, CardHeader } from '@/components/ui/card';
 import { Pagination } from '@/components/ui/pagination';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-export default function ItemIndexPage({ data, itemTypes, itemCategories, brands, units }: any) {
+export default function ItemIndexPage({ data, itemTypes, itemCategories, brands, units, attributes }: any) {
     const [createOpen, setCreateOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<any | null>(null);
@@ -129,6 +129,7 @@ export default function ItemIndexPage({ data, itemTypes, itemCategories, brands,
                 itemCategories={itemCategories}
                 brands={brands}
                 units={units}
+                 attributes={attributes}
             />
             
             <EditItemModal 

@@ -25,6 +25,8 @@ return new class extends Migration {
 
             $table->string('status')->default('ACTIVE'); // ACTIVE / INACTIVE
 
+              $table->json('attributes')->nullable(); 
+
             $table->timestamps();
         });
     }
