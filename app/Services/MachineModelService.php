@@ -10,6 +10,7 @@ class MachineModelService
     public function getPaginated(): LengthAwarePaginator
     {
         return MachineModel::query()
+            ->with(['machineCategory', 'machineBrand'])
             ->latest()
             ->paginate(30);
     }

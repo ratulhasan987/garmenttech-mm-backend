@@ -25,7 +25,7 @@ class UpdateBrandRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('buildings', 'name')->ignore($brandId),
+                Rule::unique('brands', 'name')->ignore($brandId),
             ],
             'country' => [
                 'nullable',

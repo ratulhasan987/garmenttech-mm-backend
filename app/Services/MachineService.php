@@ -206,4 +206,6 @@ class MachineService
             'removed_at' => null,
         ]);
     }
+
+
 }

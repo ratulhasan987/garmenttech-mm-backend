@@ -7,33 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-/**
- * @property int $id
- * @property int $building_id
- * @property string $name
- * @property int $floor_number
- * @property string $code
- * @property string|null $description
- * @property bool $is_active
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\Building $building
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Machine> $machines
- * @property-read int|null $machines_count
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Floor newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Floor newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Floor query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Floor whereBuildingId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Floor whereCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Floor whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Floor whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Floor whereFloorNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Floor whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Floor whereIsActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Floor whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Floor whereUpdatedAt($value)
- * @mixin \Eloquent
- */
 class Floor extends Model
 {
     use HasFactory;
@@ -44,6 +17,8 @@ class Floor extends Model
         'floor_number',
         'code',
         'description',
+        'line_amount',
+        'max_machine_per_line',
         'is_active',
     ];
 
@@ -51,6 +26,8 @@ class Floor extends Model
     {
         return [
             'floor_number' => 'integer',
+            'line_amount' => 'integer',
+            'max_machine_per_line' => 'integer',
             'is_active' => 'boolean',
         ];
     }

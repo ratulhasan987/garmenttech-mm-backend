@@ -184,6 +184,138 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
         ],
     },
 
+
+
+
+
+
+
+    // Item Start 
+    
+
+      {
+        id: 'item_section',
+        title: 'Item',
+
+        items: [
+            // Products
+            {
+                id: 'item',
+                title: 'Item',
+
+                icon: {
+                    id: 'stroke-project',
+                    type: 'fill',
+                },
+
+                subItems: [
+                    {
+                        id: 'item',
+                        title: 'Item',
+                        path: '/item',
+                    },
+                    {
+                        id: 'item_type_setup',
+                        title: 'Item Type',
+                        path: '/item-type',
+                    },
+                    {
+                        id: 'item_category_setup',
+                        title: 'Item Category',
+                        path: '/item-category',
+                    },
+                    {
+                        id: 'item_attribute_setup',
+                        title: 'Attribute',
+                        path: '/attribute',
+                    },
+             
+                ],
+            },
+
+
+        ],
+    },
+  
+
+    // Item End 
+
+
+
+
+    // Machine start 
+
+
+    {
+        id: 'machine',
+        title: 'Machine',
+
+        items: [
+
+            {
+                id: 'machine',
+                title: 'Machine',
+
+                icon: {
+                    id: 'stroke-project',
+                    type: 'fill',
+                },
+                path: '/machine',
+
+            },
+             {
+            id: 'machine_location',
+            title: 'Machine Location',
+            icon: { id: 'stroke-project', type: 'fill' }, 
+            path: '/machine-location',
+        },
+
+            {
+                id: 'machine_setup',
+                title: 'Machine Setup',
+
+                icon: {
+                    id: 'stroke-project',
+                    type: 'fill',
+                },
+                subItems: [
+                    {
+                        id: 'building_setup',
+                        title: 'Building',
+                        path: '/building',
+                    },
+                    {
+                        id: 'floor_setup',
+                        title: 'Floor',
+                        path: '/floor',
+                    },
+                    {
+                        id: 'machine_category_setup',
+                        title: 'Machine Category',
+                        path: '/machine-category',
+                    },
+                    {
+                        id: 'machine_model_setup',
+                        title: 'Machine Model',
+                        path: '/machine-model',
+                    },
+                    {
+                        id: 'brand_setup',
+                        title: 'Brand',
+                        path: '/brand',
+                    },
+
+                ],
+            },
+        ],
+    },
+
+
+
+    // Machine end
+
+
+
     {
         id: 'sales_section',
         title: 'Sales',
@@ -342,6 +474,9 @@ export const SIDEBAR_SECTIONS: SidebarSection[] = [
             },
         ],
     },
+  
+  
+  
     {
         id: 'purchase_module',
         title: 'Purchase',

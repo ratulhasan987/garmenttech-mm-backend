@@ -6,65 +6,74 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
-/**
- * @property int $id
- * @property string $machine_id
- * @property int $model_id
- * @property string $code
- * @property string|null $notes
- * @property string $status
- * @property \Carbon\CarbonImmutable|null $created_at
- * @property \Carbon\CarbonImmutable|null $updated_at
- * @property-read \App\Models\MachineLocation|null $currentLocation
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\MachineLocation> $locations
- * @property-read int|null $locations_count
- * @property-read \App\Models\MachineModel $model
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Machine newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Machine newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Machine query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Machine whereCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Machine whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Machine whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Machine whereMachineId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Machine whereModelId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Machine whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Machine whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Machine whereUpdatedAt($value)
- * @mixin \Eloquent
- */
 class Machine extends Model
 {
     protected $fillable = [
         'machine_id',
         'model_id',
+        'floor_id',
         'code',
-        'qr_code',
+        'sl_no',
+        // 'qr_code',
         'notes',
         'status',
     ];
-
-    // Relationships
 
     public function model(): BelongsTo
     {
         return $this->belongsTo(MachineModel::class, 'model_id');
     }
 
+    public function floor(): BelongsTo
+    {
+        return $this->belongsTo(Floor::class);
+    }
+
+    public function building(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Building::class,
+            Floor::class,
+            'id',          // Foreign key on floors table...
+            'id',          // Foreign key on buildings table...
+            'floor_id',    // Local key on machines table...
+            'building_id'  // Local key on floors table...
+        );
+    }
+
+    public function brand(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Brand::class,
+            MachineModel::class,
+            'id',          // Foreign key on machine_models table...
+            'id',          // Foreign key on brands table...
+            'model_id',    // Local key on machines table...
+            'brand_id'     // Local key on machine_models table...
+        );
+    }
+
+    /**
+     * Get all location history records for the machine.
+     */
     public function locations(): HasMany
     {
         return $this->hasMany(MachineLocation::class);
     }
 
+    /**
+     * Get the current active location of the machine.
+     */
     public function currentLocation(): HasOne
     {
-        return $this->hasOne(MachineLocation::class)->whereNull('removed_at');
-    }
-
-    // Helpers
-
-    public function isCurrentlyAssigned(): bool
-    {
-        return $this->currentLocation()->exists();
+        return $this->hasOne(MachineLocation::class)
+            ->whereNull('removed_at')
+            ->latest('assigned_at');
     }
 }
+
+
+
+

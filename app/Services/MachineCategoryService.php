@@ -4,16 +4,15 @@ namespace App\Services;
 
 use App\Models\MachineCategory;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
 class MachineCategoryService
 {
-
     public function getPaginated(): LengthAwarePaginator
     {
         return MachineCategory::query()
+            ->with('parent')
             ->latest()
             ->paginate(30);
     }
@@ -45,7 +44,6 @@ class MachineCategoryService
         return $category->fresh();
     }
 
-
     public function deleteCategory(MachineCategory $category, bool $reassignChildrenToParent = false): bool
     {
         return DB::transaction(function () use ($category, $reassignChildrenToParent) {
@@ -63,7 +61,7 @@ class MachineCategoryService
     public function toggleStatus(MachineCategory $category): MachineCategory
     {
         $category->update([
-            'is_active' => !$category->is_active,
+            'is_active' => ! $category->is_active,
         ]);
 
         return $category;

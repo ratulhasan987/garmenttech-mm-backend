@@ -2,47 +2,57 @@
 
 use App\Http\Controllers\AccountsDashboardController;
 use App\Http\Controllers\AiConfigController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\EmployeeDashboardController;
-use App\Http\Controllers\HrDashboardController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\ProductCategoryController;
-use App\Http\Controllers\ProductBrandController;
-use App\Http\Controllers\SalaryAdvanceController;
-use App\Http\Controllers\SalaryController;
-use App\Http\Controllers\SalaryIncrementController;
+use App\Http\Controllers\AreaController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\BillPaymentController;
 use App\Http\Controllers\ConfigureController;
+use App\Http\Controllers\CrmDashboardController;
 use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DesignationController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\EmployeeDashboardController;
 use App\Http\Controllers\FinanceController;
 use App\Http\Controllers\FinanceDocumentController;
 use App\Http\Controllers\GoodsReceivedNoteController;
 use App\Http\Controllers\HolidayController;
+use App\Http\Controllers\HrDashboardController;
+use App\Http\Controllers\LeadController;
+use App\Http\Controllers\LeadConversationController;
+use App\Http\Controllers\LeadDesignationController;
+use App\Http\Controllers\LeadExportImportController;
+use App\Http\Controllers\LeadFollowupNotificationController;
+use App\Http\Controllers\LeadSourceController;
+use App\Http\Controllers\LeadStageController;
 use App\Http\Controllers\LeaveController;
 use App\Http\Controllers\LeaveManagementController;
 use App\Http\Controllers\LeaveRequestController;
+use App\Http\Controllers\LoanController;
+use App\Http\Controllers\LoanInstallmentController;
 use App\Http\Controllers\LoanInterestController;
 use App\Http\Controllers\NoticeController;
+use App\Http\Controllers\ProductBrandController;
+use App\Http\Controllers\ProductCategoryController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProfessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchaseOrderController;
 use App\Http\Controllers\PurchaseReportController;
 use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\RequisitionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SalaryAdvanceController;
+use App\Http\Controllers\SalaryController;
+use App\Http\Controllers\SalaryIncrementController;
 use App\Http\Controllers\SalesCommissionConfigureController;
 use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\SalesPaymentController;
 use App\Http\Controllers\SalesReportController;
 use App\Http\Controllers\SalesReturnController;
 use App\Http\Controllers\SalesTeamController;
-use App\Http\Controllers\WarehouseController;
-use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
-
+use App\Http\Controllers\SectorController;
 use App\Http\Controllers\ShiftController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\StockReportController;
@@ -50,21 +60,22 @@ use App\Http\Controllers\TaxController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
-use App\Http\Controllers\LeadConversationController;
-use App\Http\Controllers\LeadDesignationController;
-use App\Http\Controllers\LeadExportImportController;
-use App\Http\Controllers\LeadFollowupNotificationController;
-use App\Http\Controllers\LeadSourceController;
-use App\Http\Controllers\LeadStageController;
-use App\Http\Controllers\LeadController;
-use App\Http\Controllers\SectorController;
-use App\Http\Controllers\AreaController;
-use App\Http\Controllers\ProfessionController;
-use App\Http\Controllers\WorkFromHomeController;
-use App\Http\Controllers\LoanController;
+use App\Http\Controllers\WarehouseController;
+use App\Http\Controllers\Web\BrandController;
+use App\Http\Controllers\Web\BuildingController;
+use App\Http\Controllers\Web\FloorController;
+use App\Http\Controllers\Web\MachineCategoryController;
+use App\Http\Controllers\Web\MachineController;
+use App\Http\Controllers\Web\MachineModelController;
+use App\Http\Controllers\Web\MachineLocationController;
 use App\Http\Controllers\WifiIpController;
-use App\Http\Controllers\LoanInstallmentController;
-use App\Http\Controllers\CrmDashboardController;
+use App\Http\Controllers\WorkFromHomeController;
+use App\Http\Controllers\web\ItemTypesController;
+use App\Http\Controllers\web\ItemCategoriesController;
+use App\Http\Controllers\web\ItemsController;
+use App\Http\Controllers\web\AttributesController;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/', function () {
@@ -98,8 +109,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]
     )->name('dashboard.accounts');
 
-
-
     // CRM Dashboard
     Route::get(
         '/dashboard/crm',
@@ -127,9 +136,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]
     )->name('dashboard.default');
 
-
-
-
     Route::get('/test-ui', function () {
         return Inertia::render('test-ui');
     });
@@ -143,304 +149,304 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->name('sales.')
                 ->group(function () {
 
-                // Customers
-                Route::resource(
-                    '/customers',
-                    CustomerController::class
-                )
-                    ->parameters([
-                        'customers' => 'client',
-                    ])
-                    ->only([
-                        'index',
-                        'create',
-                        'store',
-                        'show',
-                        'edit',
-                        'update',
-                        'destroy',
-                    ]);
+                    // Customers
+                    Route::resource(
+                        '/customers',
+                        CustomerController::class
+                    )
+                        ->parameters([
+                            'customers' => 'client',
+                        ])
+                        ->only([
+                            'index',
+                            'create',
+                            'store',
+                            'show',
+                            'edit',
+                            'update',
+                            'destroy',
+                        ]);
 
-                // Sales invoices
-                Route::get(
-                    '/invoices',
-                    [
-                        SalesInvoiceController::class,
-                        'index',
-                    ]
-                )->name('invoices.index');
+                    // Sales invoices
+                    Route::get(
+                        '/invoices',
+                        [
+                            SalesInvoiceController::class,
+                            'index',
+                        ]
+                    )->name('invoices.index');
 
-                Route::get(
-                    '/invoices/create',
-                    [
-                        SalesInvoiceController::class,
-                        'create',
-                    ]
-                )->name('invoices.create');
+                    Route::get(
+                        '/invoices/create',
+                        [
+                            SalesInvoiceController::class,
+                            'create',
+                        ]
+                    )->name('invoices.create');
 
-                Route::post(
-                    '/invoices',
-                    [
-                        SalesInvoiceController::class,
-                        'store',
-                    ]
-                )->name('invoices.store');
+                    Route::post(
+                        '/invoices',
+                        [
+                            SalesInvoiceController::class,
+                            'store',
+                        ]
+                    )->name('invoices.store');
 
-                Route::get(
-                    '/invoices/{salesInvoice}',
-                    [
-                        SalesInvoiceController::class,
-                        'show',
-                    ]
-                )->name('invoices.show');
+                    Route::get(
+                        '/invoices/{salesInvoice}',
+                        [
+                            SalesInvoiceController::class,
+                            'show',
+                        ]
+                    )->name('invoices.show');
 
-                Route::get(
-                    '/invoices/{salesInvoice}/edit',
-                    [
-                        SalesInvoiceController::class,
-                        'edit',
-                    ]
-                )->name('invoices.edit');
+                    Route::get(
+                        '/invoices/{salesInvoice}/edit',
+                        [
+                            SalesInvoiceController::class,
+                            'edit',
+                        ]
+                    )->name('invoices.edit');
 
-                Route::put(
-                    '/invoices/{salesInvoice}',
-                    [
-                        SalesInvoiceController::class,
-                        'update',
-                    ]
-                )->name('invoices.update');
+                    Route::put(
+                        '/invoices/{salesInvoice}',
+                        [
+                            SalesInvoiceController::class,
+                            'update',
+                        ]
+                    )->name('invoices.update');
 
-                Route::patch(
-                    '/invoices/{salesInvoice}/status',
-                    [
-                        SalesInvoiceController::class,
-                        'updateStatus',
-                    ]
-                )->name('invoices.status');
+                    Route::patch(
+                        '/invoices/{salesInvoice}/status',
+                        [
+                            SalesInvoiceController::class,
+                            'updateStatus',
+                        ]
+                    )->name('invoices.status');
 
-                Route::delete(
-                    '/invoices/{salesInvoice}',
-                    [
-                        SalesInvoiceController::class,
-                        'destroy',
-                    ]
-                )->name('invoices.destroy');
+                    Route::delete(
+                        '/invoices/{salesInvoice}',
+                        [
+                            SalesInvoiceController::class,
+                            'destroy',
+                        ]
+                    )->name('invoices.destroy');
 
-                Route::get(
-                    '/invoices/{salesInvoice}/download',
-                    [
-                        SalesInvoiceController::class,
-                        'downloadPdf',
-                    ]
-                )->name('invoices.download');
+                    Route::get(
+                        '/invoices/{salesInvoice}/download',
+                        [
+                            SalesInvoiceController::class,
+                            'downloadPdf',
+                        ]
+                    )->name('invoices.download');
 
-                Route::get(
-                    '/invoices/{salesInvoice}/print',
-                    [
-                        SalesInvoiceController::class,
-                        'streamPdf',
-                    ]
-                )->name('invoices.print');
+                    Route::get(
+                        '/invoices/{salesInvoice}/print',
+                        [
+                            SalesInvoiceController::class,
+                            'streamPdf',
+                        ]
+                    )->name('invoices.print');
 
-                // Sales Return
-                Route::get(
-                    '/returns',
-                    [
-                        SalesReturnController::class,
-                        'index',
-                    ]
-                )->name('returns.index');
+                    // Sales Return
+                    Route::get(
+                        '/returns',
+                        [
+                            SalesReturnController::class,
+                            'index',
+                        ]
+                    )->name('returns.index');
 
-                Route::get(
-                    '/returns/create',
-                    [
-                        SalesReturnController::class,
-                        'create',
-                    ]
-                )->name('returns.create');
+                    Route::get(
+                        '/returns/create',
+                        [
+                            SalesReturnController::class,
+                            'create',
+                        ]
+                    )->name('returns.create');
 
-                /*
-                | Sales Return Invoice Search
-                */
+                    /*
+                    | Sales Return Invoice Search
+                    */
 
-                Route::get(
-                    '/returns/search-invoices',
-                    [
-                        SalesReturnController::class,
-                        'searchInvoices',
-                    ]
-                )->name('returns.search-invoices');
+                    Route::get(
+                        '/returns/search-invoices',
+                        [
+                            SalesReturnController::class,
+                            'searchInvoices',
+                        ]
+                    )->name('returns.search-invoices');
 
-                Route::post(
-                    '/returns',
-                    [
-                        SalesReturnController::class,
-                        'store',
-                    ]
-                )->name('returns.store');
+                    Route::post(
+                        '/returns',
+                        [
+                            SalesReturnController::class,
+                            'store',
+                        ]
+                    )->name('returns.store');
 
-                Route::get(
-                    '/returns/{salesReturn}',
-                    [
-                        SalesReturnController::class,
-                        'show',
-                    ]
-                )->name('returns.show');
+                    Route::get(
+                        '/returns/{salesReturn}',
+                        [
+                            SalesReturnController::class,
+                            'show',
+                        ]
+                    )->name('returns.show');
 
-                Route::get(
-                    '/returns/{salesReturn}/edit',
-                    [
-                        SalesReturnController::class,
-                        'edit',
-                    ]
-                )->name('returns.edit');
+                    Route::get(
+                        '/returns/{salesReturn}/edit',
+                        [
+                            SalesReturnController::class,
+                            'edit',
+                        ]
+                    )->name('returns.edit');
 
-                Route::put(
-                    '/returns/{salesReturn}',
-                    [
-                        SalesReturnController::class,
-                        'update',
-                    ]
-                )->name('returns.update');
+                    Route::put(
+                        '/returns/{salesReturn}',
+                        [
+                            SalesReturnController::class,
+                            'update',
+                        ]
+                    )->name('returns.update');
 
-                Route::patch(
-                    '/returns/{salesReturn}/status',
-                    [
-                        SalesReturnController::class,
-                        'updateStatus',
-                    ]
-                )->name('returns.status');
+                    Route::patch(
+                        '/returns/{salesReturn}/status',
+                        [
+                            SalesReturnController::class,
+                            'updateStatus',
+                        ]
+                    )->name('returns.status');
 
-                Route::delete(
-                    '/returns/{salesReturn}',
-                    [
-                        SalesReturnController::class,
-                        'destroy',
-                    ]
-                )->name('returns.destroy');
+                    Route::delete(
+                        '/returns/{salesReturn}',
+                        [
+                            SalesReturnController::class,
+                            'destroy',
+                        ]
+                    )->name('returns.destroy');
 
-                Route::get(
-                    '/returns/{salesReturn}/download',
-                    [
-                        SalesReturnController::class,
-                        'downloadPdf',
-                    ]
-                )->name('returns.download');
+                    Route::get(
+                        '/returns/{salesReturn}/download',
+                        [
+                            SalesReturnController::class,
+                            'downloadPdf',
+                        ]
+                    )->name('returns.download');
 
-                Route::get(
-                    '/returns/{salesReturn}/print',
-                    [
-                        SalesReturnController::class,
-                        'streamPdf',
-                    ]
-                )->name('returns.print');
+                    Route::get(
+                        '/returns/{salesReturn}/print',
+                        [
+                            SalesReturnController::class,
+                            'streamPdf',
+                        ]
+                    )->name('returns.print');
 
-                // Sales Payment
-                Route::get(
-                    '/payments',
-                    [
-                        SalesPaymentController::class,
-                        'index',
-                    ]
-                )->name('payments.index');
+                    // Sales Payment
+                    Route::get(
+                        '/payments',
+                        [
+                            SalesPaymentController::class,
+                            'index',
+                        ]
+                    )->name('payments.index');
 
-                Route::get(
-                    '/payments/create',
-                    [
-                        SalesPaymentController::class,
-                        'create',
-                    ]
-                )->name('payments.create');
+                    Route::get(
+                        '/payments/create',
+                        [
+                            SalesPaymentController::class,
+                            'create',
+                        ]
+                    )->name('payments.create');
 
-                Route::post(
-                    '/payments',
-                    [
-                        SalesPaymentController::class,
-                        'store',
-                    ]
-                )->name('payments.store');
+                    Route::post(
+                        '/payments',
+                        [
+                            SalesPaymentController::class,
+                            'store',
+                        ]
+                    )->name('payments.store');
 
-                Route::get(
-                    '/payments/{salesPayment}',
-                    [
-                        SalesPaymentController::class,
-                        'show',
-                    ]
-                )->name('payments.show');
+                    Route::get(
+                        '/payments/{salesPayment}',
+                        [
+                            SalesPaymentController::class,
+                            'show',
+                        ]
+                    )->name('payments.show');
 
-                Route::get(
-                    '/payments/{salesPayment}/edit',
-                    [
-                        SalesPaymentController::class,
-                        'edit',
-                    ]
-                )->name('payments.edit');
+                    Route::get(
+                        '/payments/{salesPayment}/edit',
+                        [
+                            SalesPaymentController::class,
+                            'edit',
+                        ]
+                    )->name('payments.edit');
 
-                Route::put(
-                    '/payments/{salesPayment}',
-                    [
-                        SalesPaymentController::class,
-                        'update',
-                    ]
-                )->name('payments.update');
+                    Route::put(
+                        '/payments/{salesPayment}',
+                        [
+                            SalesPaymentController::class,
+                            'update',
+                        ]
+                    )->name('payments.update');
 
-                Route::patch(
-                    '/payments/{salesPayment}/status',
-                    [
-                        SalesPaymentController::class,
-                        'updateStatus',
-                    ]
-                )->name('payments.status');
+                    Route::patch(
+                        '/payments/{salesPayment}/status',
+                        [
+                            SalesPaymentController::class,
+                            'updateStatus',
+                        ]
+                    )->name('payments.status');
 
-                Route::delete(
-                    '/payments/{salesPayment}',
-                    [
-                        SalesPaymentController::class,
-                        'destroy',
-                    ]
-                )->name('payments.destroy');
+                    Route::delete(
+                        '/payments/{salesPayment}',
+                        [
+                            SalesPaymentController::class,
+                            'destroy',
+                        ]
+                    )->name('payments.destroy');
 
-                Route::get(
-                    '/payments/{salesPayment}/download',
-                    [
-                        SalesPaymentController::class,
-                        'downloadPdf',
-                    ]
-                )->name('payments.download');
+                    Route::get(
+                        '/payments/{salesPayment}/download',
+                        [
+                            SalesPaymentController::class,
+                            'downloadPdf',
+                        ]
+                    )->name('payments.download');
 
-                Route::get(
-                    '/payments/{salesPayment}/print',
-                    [
-                        SalesPaymentController::class,
-                        'streamPdf',
-                    ]
-                )->name('payments.print');
+                    Route::get(
+                        '/payments/{salesPayment}/print',
+                        [
+                            SalesPaymentController::class,
+                            'streamPdf',
+                        ]
+                    )->name('payments.print');
 
-                Route::get(
-                    '/report',
-                    [
-                        SalesReportController::class,
-                        'index',
-                    ]
-                )->name('report.index');
+                    Route::get(
+                        '/report',
+                        [
+                            SalesReportController::class,
+                            'index',
+                        ]
+                    )->name('report.index');
 
-                Route::post(
-                    '/report',
-                    [
-                        SalesReportController::class,
-                        'report',
-                    ]
-                )->name('report.show');
+                    Route::post(
+                        '/report',
+                        [
+                            SalesReportController::class,
+                            'report',
+                        ]
+                    )->name('report.show');
 
-                Route::post(
-                    '/report/pdf',
-                    [
-                        SalesReportController::class,
-                        'downloadPdf',
-                    ]
-                )->name('report.pdf');
+                    Route::post(
+                        '/report/pdf',
+                        [
+                            SalesReportController::class,
+                            'downloadPdf',
+                        ]
+                    )->name('report.pdf');
 
-            });
+                });
 
             // Products
             Route::get(
@@ -450,20 +456,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'search',
                 ]
             )->name(
-                    'products.search'
-                );
+                'products.search'
+            );
 
             Route::resource(
                 '/products',
                 ProductController::class
             )->only([
-                        'index',
-                        'create',
-                        'store',
-                        'edit',
-                        'update',
-                        'destroy',
-                    ]);
+                'index',
+                'create',
+                'store',
+                'edit',
+                'update',
+                'destroy',
+            ]);
 
             // Categories
             Route::resource(
@@ -500,14 +506,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 '/warehouses',
                 WarehouseController::class
             )->only([
-                        'index',
-                        'store',
-                        'update',
-                        'destroy',
-                    ]);
+                'index',
+                'store',
+                'update',
+                'destroy',
+            ]);
         });
-
-
 
     // Human Resources
 
@@ -528,8 +532,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'index',
                 ]
             )->name(
-                    'salary.overview'
-                );
+                'salary.overview'
+            );
 
             // Salary Increment
 
@@ -540,8 +544,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'index',
                 ]
             )->name(
-                    'increment.index'
-                );
+                'increment.index'
+            );
 
             Route::post(
                 '/increment',
@@ -550,8 +554,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'store',
                 ]
             )->name(
-                    'increment.store'
-                );
+                'increment.store'
+            );
 
             Route::get(
                 '/increment/create',
@@ -560,8 +564,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'create',
                 ]
             )->name(
-                    'increment.create'
-                );
+                'increment.create'
+            );
 
             Route::get(
                 '/increment/{increment}',
@@ -570,8 +574,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'show',
                 ]
             )->name(
-                    'increment.show'
-                );
+                'increment.show'
+            );
 
             Route::get(
                 '/increment/{increment}/edit',
@@ -580,8 +584,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'edit',
                 ]
             )->name(
-                    'increment.edit'
-                );
+                'increment.edit'
+            );
 
             Route::put(
                 '/increment/{increment}',
@@ -590,8 +594,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'update',
                 ]
             )->name(
-                    'increment.update'
-                );
+                'increment.update'
+            );
 
             Route::delete(
                 '/increment/{increment}',
@@ -600,8 +604,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'destroy',
                 ]
             )->name(
-                    'increment.destroy'
-                );
+                'increment.destroy'
+            );
 
             Route::patch(
                 '/increment/{increment}/status',
@@ -610,8 +614,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'updateStatus',
                 ]
             )->name(
-                    'increment.status'
-                );
+                'increment.status'
+            );
 
             // Salary Advance
 
@@ -622,8 +626,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'index',
                 ]
             )->name(
-                    'salary.advance.index'
-                );
+                'salary.advance.index'
+            );
 
             Route::post(
                 '/salary-advance',
@@ -632,8 +636,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'store',
                 ]
             )->name(
-                    'salary.advance.store'
-                );
+                'salary.advance.store'
+            );
 
             Route::get(
                 '/salary-advance/{salaryAdvance}/edit',
@@ -642,8 +646,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'edit',
                 ]
             )->name(
-                    'salary.advance.edit'
-                );
+                'salary.advance.edit'
+            );
 
             Route::put(
                 '/salary-advance/{salaryAdvance}',
@@ -652,8 +656,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'update',
                 ]
             )->name(
-                    'salary.advance.update'
-                );
+                'salary.advance.update'
+            );
 
             Route::delete(
                 '/salary-advance/{salaryAdvance}',
@@ -662,8 +666,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'destroy',
                 ]
             )->name(
-                    'salary.advance.destroy'
-                );
+                'salary.advance.destroy'
+            );
 
             // Salary Generate
 
@@ -674,8 +678,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'generate',
                 ]
             )->name(
-                    'salary.generate.index'
-                );
+                'salary.generate.index'
+            );
 
             Route::post(
                 '/salary-generate',
@@ -684,8 +688,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'generateSalaries',
                 ]
             )->name(
-                    'salary.generate'
-                );
+                'salary.generate'
+            );
 
             // Manage Payslip
             Route::get(
@@ -695,8 +699,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'payslipIndex',
                 ]
             )->name(
-                    'payslip.index'
-                );
+                'payslip.index'
+            );
 
             Route::get(
                 '/payslip/{salary}',
@@ -705,8 +709,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'payslip',
                 ]
             )->name(
-                    'payslip.show'
-                );
+                'payslip.show'
+            );
 
             Route::get(
                 '/payslip/{salary}/download',
@@ -715,8 +719,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'payslipDownload',
                 ]
             )->name(
-                    'payslip.download'
-                );
+                'payslip.download'
+            );
 
             Route::patch(
                 '/payslip/{salary}/status',
@@ -725,8 +729,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'updateStatus',
                 ]
             )->name(
-                    'payslip.status'
-                );
+                'payslip.status'
+            );
 
             // Salary Chart
 
@@ -737,9 +741,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'salaryChart',
                 ]
             )->name(
-                    'salary.chart'
-                );
-
+                'salary.chart'
+            );
 
             // User Salary Report
             Route::get(
@@ -749,8 +752,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'userSalaryReport',
                 ]
             )->name(
-                    'salary.report'
-                );
+                'salary.report'
+            );
 
             Route::post(
                 '/salary-report',
@@ -759,10 +762,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
                     'generateUserSalaryReport',
                 ]
             )->name(
-                    'salary.report.generate'
-                );
+                'salary.report.generate'
+            );
         });
-
 
     // Human Resources - Attendance
     Route::middleware([
@@ -775,119 +777,110 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get(
             '/hr/attendance',
             [
-                \App\Http\Controllers\AttendanceController::class,
+                AttendanceController::class,
                 'index',
             ]
         )->name(
-                'attendance.index'
-            );
+            'attendance.index'
+        );
 
         Route::post(
             '/hr/attendance',
             [
-                \App\Http\Controllers\AttendanceController::class,
+                AttendanceController::class,
                 'store',
             ]
         )->name(
-                'attendance.store'
-            );
-
+            'attendance.store'
+        );
 
         // Employee Attendance
 
         Route::get(
             '/hr/attendance/employees',
             [
-                \App\Http\Controllers\AttendanceController::class,
+                AttendanceController::class,
                 'employeeAttendance',
             ]
         )->name(
-                'hr.employee-attendance'
-            );
-
-
+            'hr.employee-attendance'
+        );
 
         // Manual Attendance
         Route::get(
             '/hr/attendance/manual',
             [
-                \App\Http\Controllers\AttendanceController::class,
+                AttendanceController::class,
                 'manualAttendance',
             ]
         )->name(
-                'attendance.manual'
-            );
+            'attendance.manual'
+        );
 
         Route::get(
             '/hr/attendance/manual/{userId}/check/{date}',
             [
-                \App\Http\Controllers\AttendanceController::class,
+                AttendanceController::class,
                 'attendanceCheck',
             ]
         )->name(
-                'attendance.manual.check'
-            );
+            'attendance.manual.check'
+        );
 
         Route::post(
             '/hr/attendance/manual',
             [
-                \App\Http\Controllers\AttendanceController::class,
+                AttendanceController::class,
                 'manualAttendanceStore',
             ]
         )->name(
-                'attendance.manual.store'
-            );
-
-
+            'attendance.manual.store'
+        );
 
         // Attendance Reports - Page
         Route::get(
             '/hr/attendance/reports',
             [
-                \App\Http\Controllers\AttendanceController::class,
+                AttendanceController::class,
                 'reports',
             ]
         )->name(
-                'hr.attendance.reports'
-            );
-
+            'hr.attendance.reports'
+        );
 
         // All Employee Report
         Route::post(
             '/hr/report/attendance/all',
             [
-                \App\Http\Controllers\AttendanceController::class,
+                AttendanceController::class,
                 'allAttendanceReport',
             ]
         )->name(
-                'hr.report.attendance.all'
-            );
-
+            'hr.report.attendance.all'
+        );
 
         // Individual Employee Report
         Route::post(
             '/hr/report/attendance/individual',
             [
-                \App\Http\Controllers\AttendanceController::class,
+                AttendanceController::class,
                 'individualAttendanceReport',
             ]
         )->name(
-                'hr.report.attendance.individual'
-            );
-
+            'hr.report.attendance.individual'
+        );
 
         // Monthly Employee Report
         Route::post(
             '/hr/report/attendance/monthly',
             [
-                \App\Http\Controllers\AttendanceController::class,
+                AttendanceController::class,
                 'monthlyAttendanceReport',
             ]
         )->name(
-                'hr.report.attendance.monthly'
-            );
+            'hr.report.attendance.monthly'
+        );
     });
-
 
     // Department
     Route::resource('/department', DepartmentController::class);
@@ -1035,8 +1028,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'getRequisitions',
         ]
     )->name(
-            'requisition.get-requisitions'
-        );
+        'requisition.get-requisitions'
+    );
 
     Route::post(
         '/requisition-status',
@@ -1045,8 +1038,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'updateRequisitionStatus',
         ]
     )->name(
-            'requisition.status'
-        );
+        'requisition.status'
+    );
 
     Route::post(
         '/requisition-item-status',
@@ -1055,8 +1048,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'updateRequisitionItemStatus',
         ]
     )->name(
-            'requisition.item-status'
-        );
+        'requisition.item-status'
+    );
 
     Route::get(
         '/requisition/{id}/download-pdf',
@@ -1065,8 +1058,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'downloadPdf',
         ]
     )->name(
-            'requisition.download_pdf'
-        );
+        'requisition.download_pdf'
+    );
 
     Route::get(
         '/requisition/{id}/stream-pdf',
@@ -1075,8 +1068,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             'streamPdf',
         ]
     )->name(
-            'requisition.stream_pdf'
-        );
+        'requisition.stream_pdf'
+    );
 
     /*
 |--------------------------------------------------------------------------
@@ -1172,10 +1165,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/bill-payment/{id}/download-pdf', [BillPaymentController::class, 'downloadPdf'])->name('bill.payment.download-pdf');
     Route::get('/bill-payment/{id}/stream-pdf', [BillPaymentController::class, 'streamPdf'])->name('bill.payment.stream-pdf');
-
-
-
-
 
     // Stock Reports
     Route::get(
@@ -1327,7 +1316,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/lead-stage-update', [LeadStageController::class, 'updateStage'])->name('lead-stage.update-lead-stage');
     Route::get('/get-lead-stages', [LeadStageController::class, 'getLeadStages'])->name('lead-stage.get-stages');
 
-
     // Sectors
     Route::resource('/sector', SectorController::class);
     Route::post('/sector-update', [SectorController::class, 'updateSector'])->name('sector.update-sector');
@@ -1378,7 +1366,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/leads/bulk-unassign', [LeadController::class, 'bulkUnassign'])
         ->name('leads.bulk.unassign');
 
-
     // Lead Conversation
     Route::get('/lead-conversation/{lead}', [LeadConversationController::class, 'create'])->name('lead.conversation.create');
     Route::post('/lead-conversation/{lead}', [LeadConversationController::class, 'store'])->name('lead.conversation.store');
@@ -1411,17 +1398,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Notice Resource (Handles index, create, store, show, edit, update, destroy)
     Route::resource('notice', NoticeController::class);
 
-
     // Work From Home Request
     Route::get('hr/all-wfh', [WorkFromHomeController::class, 'index'])->name('hr.workFromHomeRequest.index');
     Route::get('hr/wfh', [WorkFromHomeController::class, 'workFromHomeRequest'])->name('hr.workFromHomeRequest');
     Route::post('hr/wfh', [WorkFromHomeController::class, 'store'])->name('hr.workFromHomeRequest.store');
     Route::post(
-    '/hr/wfh/manual',
-    [WorkFromHomeController::class, 'manualStore']
-)
-    ->middleware('permission:WFH.status')
-    ->name('hr.wfh.manual.store');
+        '/hr/wfh/manual',
+        [WorkFromHomeController::class, 'manualStore']
+    )
+        ->middleware('permission:WFH.status')
+        ->name('hr.wfh.manual.store');
     Route::get('hr/wfh/{workFromHome}/edit', [WorkFromHomeController::class, 'edit'])->name('hr.workFromHomeRequest.edit');
     Route::post('hr/wfh/update', [WorkFromHomeController::class, 'update'])->name('hr.workFromHomeRequest.update');
     Route::get('hr/wfh/{workFromHome}/show', [WorkFromHomeController::class, 'show'])->name('hr.workFromHomeRequest.show');
@@ -1464,11 +1450,88 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Loan Installment
     Route::get('hr/loan-installment/{loan}/show', [LoanInstallmentController::class, 'index'])->name('hr.loan.installment');
 
+    // Machine Maintenance setup
+    // building
+    Route::get('/building', [BuildingController::class, 'index'])->name('building.index');
+    Route::post('/building', [BuildingController::class, 'store'])->name('building.store');
+    Route::put('/building/{building}', [BuildingController::class, 'update'])->name('building.update');
+    Route::delete('/building/{id}', [BuildingController::class, 'destroy'])->name('building.destroy');
+    // Floor
+    Route::get('/floor', [FloorController::class, 'index'])->name('floor.index');
+    Route::post('/floor', [FloorController::class, 'store'])->name('floor.store');
+    Route::put('/floor/{floor}', [FloorController::class, 'update'])->name('floor.update');
+    Route::delete('/floor/{id}', [FloorController::class, 'destroy'])->name('floor.destroy');
+    // Machine category
+    Route::get('/machine-category', [MachineCategoryController::class, 'index'])->name('machine-category.index');
+    Route::post('/machine-category', [MachineCategoryController::class, 'store'])->name('machine-category.store');
+    Route::put('/machine-category/{machineCategory}', [MachineCategoryController::class, 'update'])->name('machine-category.update');
+    Route::delete('/machine-category/{id}', [MachineCategoryController::class, 'destroy'])->name('machine-category.destroy');
+    // machine model
+    Route::get('/machine-model', [MachineModelController::class, 'index'])->name('machine-model.index');
+    Route::post('/machine-model', [MachineModelController::class, 'store'])->name('machine-model.store');
+    Route::put('/machine-model/{machineModel}', [MachineModelController::class, 'update'])->name('machine-model.update');
+    Route::delete('/machine-model/{id}', [MachineModelController::class, 'destroy'])->name('machine-model.destroy');
+
+    // brand
+    Route::get('/brand', [BrandController::class, 'index'])->name('brand.index');
+    Route::post('/brand', [BrandController::class, 'store'])->name('brand.store');
+    Route::put('/brand/{brand}', [BrandController::class, 'update'])->name('brand.update');
+    Route::delete('/brand/{id}', [BrandController::class, 'destroy'])->name('brand.destroy');
+
+    // machine
+    Route::get('/machine', [MachineController::class, 'index'])->name('machine.index');
+    Route::post('/machine', [MachineController::class, 'store'])->name('machine.store');
+    Route::put('/machine/{machine}', [MachineController::class, 'update'])->name('machine.update');
+    Route::delete('/machine/{id}', [MachineController::class, 'destroy'])->name('machine.destroy');
+
+    // New Route for QR Code Download
+    Route::get('/machine/{machine}/qr-code', [MachineController::class, 'downloadQr'])->name('machine.qr-code');
+
+
+// Machine Location Routes
+Route::get('/machine-location', [MachineLocationController::class, 'index'])->name('machine-location.index');
+Route::get('/machine-location/{floor}', [MachineLocationController::class, 'showFloor'])->name('machine-location.show');
+Route::post('/machine-location/swap', [MachineLocationController::class, 'swap'])->name('machine-location.swap');
+Route::post('/machine-location/move', [MachineLocationController::class, 'moveToFloor'])->name('machine-location.move');
+Route::delete('/machine-location/{machine}/remove', [MachineLocationController::class, 'removeLocation'])->name('machine-location.remove');
+Route::post ('/machine-location/bulk-remove',    [MachineLocationController::class, 'bulkRemoveLocation'])->name('machine-location.bulk-remove');
+
+Route::post('/machine-location/move-to-slot', [MachineLocationController::class, 'moveToSlot'])
+    ->name('machine-location.move-to-slot');
+
+
+
+
+// Item Types
+Route::get('/item-type', [ItemTypesController::class, 'index'])->name('item.type.index');
+Route::post('/item-type', [ItemTypesController::class, 'store'])->name('item.type.store');
+Route::put('/item-type/{item_type}', [ItemTypesController::class, 'update'])->name('item.type.update');
+Route::delete('/item-type/{item_type}', [ItemTypesController::class, 'destroy'])->name('item.type.destroy');
+
+
+// Item Categories
+Route::get('/item-category', [ItemCategoriesController::class, 'index'])->name('item.category.index');
+Route::post('/item-category', [ItemCategoriesController::class, 'store'])->name('item.category.store');
+Route::put('/item-category/{item_category}', [ItemCategoriesController::class, 'update'])->name('item.category.update');
+Route::delete('/item-category/{item_category}', [ItemCategoriesController::class, 'destroy'])->name('item.category.destroy');
+
+
+// Items
+Route::get('/item', [ItemsController::class, 'index'])->name('item.index');
+Route::post('/item', [ItemsController::class, 'store'])->name('item.store');
+Route::put('/item/{item}', [ItemsController::class, 'update'])->name('item.update');
+Route::delete('/item/{item}', [ItemsController::class, 'destroy'])->name('item.destroy');
+
+
+Route::get('/attribute', [AttributesController::class, 'index'])->name('attribute.index');
+Route::post('/attribute', [AttributesController::class, 'store'])->name('attribute.store');
+Route::put('/attribute/{attribute}', [AttributesController::class, 'update'])->name('attribute.update');
+Route::delete('/attribute/{attribute}', [AttributesController::class, 'destroy'])->name('attribute.destroy');
+
 
 
     Route::post('/notifications/mark-as-read', function () {
-        auth()->user()->unreadNotifications->markAsRead();
-
+        auth()->user()->unreadNotifications->markAsRead(); 
         return redirect()->back();
     });
 
@@ -1498,6 +1561,3 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return back();
     });
 });
-
-
-

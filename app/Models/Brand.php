@@ -37,6 +37,7 @@ class Brand extends Model
     protected $fillable = [
         'name',
         'country',
+        'code',
         'website',
         'description',
         'is_active',
@@ -54,6 +55,11 @@ class Brand extends Model
         return $this->hasMany(MachineModel::class);
     }
 
+
+    public function items(): HasMany
+{
+    return $this->hasMany(Item::class);
+}
 
 
 }

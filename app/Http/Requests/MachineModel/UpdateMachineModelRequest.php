@@ -3,6 +3,7 @@
 namespace App\Http\Requests\MachineModel;
 
 use App\Http\Responses\ApiResponse;
+use App\Models\MachineModel;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
@@ -14,10 +15,29 @@ class UpdateMachineModelRequest extends FormRequest
         return $this->user()?->can('machine_model.edit') ?? true;
     }
 
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        // React sends "" when "None" is selected in dropdowns.
+        // Convert empty strings to null so they don't fail the 'integer' validation rule.
+        $this->merge([
+            'machine_category_id' => $this->machine_category_id === '' ? null : $this->machine_category_id,
+            'brand_id'            => $this->brand_id === '' ? null : $this->brand_id,
+        ]);
+    }
+
     public function rules(): array
     {
-        $model = $this->route('machine_model');
-        $modelId = is_object($model) ? $model->id : $model;
+        // Robustly fetch the ID to handle various route parameter names ({id}, {machine_model}, etc.)
+        $model = $this->route('machine_model') 
+            ?? $this->route('machineModel') 
+            ?? $this->route('id');
+            
+        $modelId = $model instanceof MachineModel 
+            ? $model->id 
+            : $model;
 
         return [
             'code' => [
@@ -67,7 +87,8 @@ class UpdateMachineModelRequest extends FormRequest
     {
         throw new HttpResponseException(
             ApiResponse::error(
-                message: 'You do not have permission to create a machine model.',
+                // Fixed typo: changed 'create' to 'update'
+                message: 'You do not have permission to update a machine model.',
                 status: 403
             )
         );

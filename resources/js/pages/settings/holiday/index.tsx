@@ -22,25 +22,23 @@ import { Pagination } from '@/components/ui/pagination';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { Edit, Trash } from 'react-feather';
-import type { Holiday } from '@/types/holiday';
+import type { Building } from '@/types/building';
 import type { PaginatedData } from '@/types/pagination';
-import CreateHolidayModal from '@/components/pages/holiday/create-holiday-modal';
-import EditHolidayModal from '@/components/pages/holiday/edit-holiday-modal';
+import CreateBuildingModal from '@/components/pages/building/create-building-modal';
+import EditBuildingModal from '@/components/pages/building/edit-building-modal';
 
-// [Biztek] CHANGED - PaginatedData instead of plain array
 type Props = {
-    data: PaginatedData<Holiday>;
+    data: PaginatedData<Building>;
 };
 
-export default function HolidayIndexPage({ data }: Props) {
+export default function BuildingIndexPage({ data }: Props) {
     const [createModalOpen, setCreateModalOpen] = useState(false);
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-    const [selectedHoliday, setSelectedHoliday] = useState<Holiday | null>(null);
+    const [selectedBuilding, setSelectedBuilding] = useState<Building | null>(null);
     const [deleting, setDeleting] = useState(false);
     const [deleteKey, setDeleteKey] = useState(0);
 
-    // [Biztek] ADDED - pagination handler
     const handlePageChange = (page: number) => {
         router.get(
             window.location.pathname,
@@ -53,50 +51,42 @@ export default function HolidayIndexPage({ data }: Props) {
         );
     };
 
-    const handleEdit = (holiday: Holiday) => {
-        setSelectedHoliday(holiday);
+    const handleEdit = (building: Building) => {
+        setSelectedBuilding(building);
         setEditModalOpen(true);
     };
 
-    const handleDelete = (holiday: Holiday) => {
-        setSelectedHoliday(holiday);
+    const handleDelete = (building: Building) => {
+        setSelectedBuilding(building);
         setDeleteKey((prev) => prev + 1);
         setDeleteModalOpen(true);
     };
 
     const confirmDelete = () => {
-        if (!selectedHoliday) return;
+        if (!selectedBuilding) return;
 
-        router.delete(`/holiday/${selectedHoliday.id}`, {
+        router.delete(`/building/${selectedBuilding.id}`, {
             preserveScroll: true,
             onStart: () => setDeleting(true),
             onFinish: () => setDeleting(false),
             onSuccess: () => {
                 setDeleteModalOpen(false);
-                setSelectedHoliday(null);
+                setSelectedBuilding(null);
             },
         });
     };
 
-    const formatDate = (dateStr: string, isRecurring: boolean) => {
-        const date = new Date(dateStr);
-        if (isRecurring) {
-            return date.toLocaleDateString('en-US', { day: '2-digit', month: 'short' });
-        }
-        return date.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
-    };
-
     return (
         <>
-         <Head title="Holiday Setup" />
-            <PageTitle title="Holiday Setup" />
+            <Head title="Building Setup" />
+            <PageTitle title="Building Setup" />
 
             <div className="container-fluid">
                 <Card>
                     <CardHeader>
                         <div className="d-flex flex-wrap gap-3 justify-content-between">
                             <Button onClick={() => setCreateModalOpen(true)}>
-                                Add New Holiday
+                                Add New Building
                             </Button>
                         </div>
                     </CardHeader>
@@ -109,49 +99,63 @@ export default function HolidayIndexPage({ data }: Props) {
                             <TableHeader>
                                 <TableRow>
                                     <TableHead sticky>Sl</TableHead>
-                                    <TableHead sticky>Holiday Name</TableHead>
-                                    <TableHead sticky>Date</TableHead>
-                                    <TableHead sticky>Recurring</TableHead>
+                                    <TableHead sticky>Building Code</TableHead>
+                                    <TableHead sticky>Building Name</TableHead>
+                                    <TableHead sticky>Address</TableHead>
+                                    <TableHead sticky>Status</TableHead>
                                     <TableHead sticky>Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
 
                             <TableBody>
-                                {/* [Biztek] CHANGED - data.data instead of holidays */}
                                 {data.data.length > 0 ? (
-                                    data.data.map((holiday, idx) => (
-                                        <TableRow key={holiday.id}>
-                                            {/* [Biztek] CHANGED - pagination offset for serial */}
+                                    data.data.map((building, idx) => (
+                                        <TableRow key={building.id}>
                                             <TableCell>
                                                 {(data.current_page - 1) * data.per_page + idx + 1}
                                             </TableCell>
-                                            <TableCell>{holiday.name}</TableCell>
+                                            <TableCell>{building.code || 'N/A'}</TableCell>
+                                            <TableCell>{building.name}</TableCell>
                                             <TableCell>
-                                                {formatDate(holiday.display_date, holiday.is_recurring)}
+                                                {building.address ? (
+                                                    <span
+                                                        title={building.address}
+                                                        style={{
+                                                            maxWidth: '250px',
+                                                            display: 'inline-block',
+                                                            overflow: 'hidden',
+                                                            textOverflow: 'ellipsis',
+                                                            whiteSpace: 'nowrap',
+                                                        }}
+                                                    >
+                                                        {building.address}
+                                                    </span>
+                                                ) : (
+                                                    '—'
+                                                )}
                                             </TableCell>
                                             <TableCell>
-                                                {holiday.is_recurring ? (
-                                                    <Badge variant="success">Recurring</Badge>
+                                                {building.is_active ? (
+                                                    <Badge variant="success">Active</Badge>
                                                 ) : (
-                                                    <Badge variant="warning">One-Time</Badge>
+                                                    <Badge variant="danger">Inactive</Badge>
                                                 )}
                                             </TableCell>
                                             <TableCell>
                                                 <ActionCell
-                                                    onEdit={() => handleEdit(holiday)}
-                                                    onDelete={() => handleDelete(holiday)}
+                                                    onEdit={() => handleEdit(building)}
+                                                    onDelete={() => handleDelete(building)}
                                                 />
                                             </TableCell>
                                         </TableRow>
                                     ))
                                 ) : (
-                                    <TableEmpty colSpan={5} />
+                                    <TableEmpty colSpan={6} />
                                 )}
                             </TableBody>
                         </Table>
                     </CardBody>
 
-                    {/* [Biztek] ADDED - pagination footer */}
                     <CardFooter>
                         <div className="d-flex w-100 flex-wrap gap-3 justify-content-between align-items-center">
                             <TablePaginationInfo
@@ -170,18 +174,18 @@ export default function HolidayIndexPage({ data }: Props) {
                 </Card>
             </div>
 
-            <CreateHolidayModal
+            <CreateBuildingModal
                 open={createModalOpen}
                 onOpenChange={setCreateModalOpen}
             />
 
-            <EditHolidayModal
+            <EditBuildingModal
                 open={editModalOpen}
                 onOpenChange={(open) => {
                     setEditModalOpen(open);
-                    if (!open) setSelectedHoliday(null);
+                    if (!open) setSelectedBuilding(null);
                 }}
-                holiday={selectedHoliday}
+                building={selectedBuilding}
             />
 
             <DeleteConfirmModal
@@ -190,7 +194,7 @@ export default function HolidayIndexPage({ data }: Props) {
                 onOpenChange={(open) => {
                     if (deleting) return;
                     setDeleteModalOpen(open);
-                    if (!open) setSelectedHoliday(null);
+                    if (!open) setSelectedBuilding(null);
                 }}
                 processing={deleting}
                 onConfirm={confirmDelete}
@@ -230,4 +234,3 @@ function ActionCell({ onEdit, onDelete }: ActionCellProps) {
         </ul>
     );
 }
-
