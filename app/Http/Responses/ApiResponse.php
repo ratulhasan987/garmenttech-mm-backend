@@ -7,6 +7,28 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ApiResponse
 {
+    /**
+     * @template TData
+     * @template TMeta = null
+     *
+     * @param  string                    $message
+     * @param  TData                     $data
+     * @param  TMeta|LengthAwarePaginator|null  $meta
+     * @param  int                       $status
+     * @return JsonResponse<array{
+     *     success: true,
+     *     message: string,
+     *     data: TData,
+     *     meta?: array{
+     *         current_page: int,
+     *         last_page: int,
+     *         per_page: int,
+     *         total: int,
+     *         from: int|null,
+     *         to: int|null
+     *     }|TMeta
+     * }, $status>
+     */
     public static function success(
         string $message = 'Success',
         mixed $data = null,
@@ -35,6 +57,18 @@ class ApiResponse
         return response()->json($response, $status);
     }
 
+    /**
+     * @template TErrors = null
+     *
+     * @param  string     $message
+     * @param  int        $status
+     * @param  TErrors    $errors
+     * @return JsonResponse<array{
+     *     success: false,
+     *     message: string,
+     *     errors: TErrors
+     * }, $status>
+     */
     public static function error(
         string $message,
         int $status = 400,

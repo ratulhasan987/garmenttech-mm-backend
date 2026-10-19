@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Brand\StoreBrandRequest;
 use App\Http\Requests\Brand\UpdateBrandRequest;
+use App\Http\Resources\Brand\BrandSuggestionResource;
 use App\Http\Responses\ApiResponse;
 use App\Models\Brand;
 use App\Services\BrandService;
@@ -105,7 +106,7 @@ class BrandController extends Controller
         $brands = $this->brandService->searchBrands($request);
 
         return ApiResponse::success(
-            data: $brands,
+            data: BrandSuggestionResource::collection($brands),
             message: 'Brand suggestions retrieved successfully.'
         );
     }

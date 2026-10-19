@@ -5,7 +5,39 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-// class ChartOfAccount extends Model
+/**
+ * @property int $id
+ * @property string $account_code
+ * @property string $account_name
+ * @property string $account_type
+ * @property int|null $parent_id
+ * @property int $level
+ * @property int $is_posting
+ * @property int $status
+ * @property string|null $description
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, ChartOfAccount> $children
+ * @property-read int|null $children_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\GeneralLedger> $generalLedgers
+ * @property-read int|null $general_ledgers_count
+ * @property-read ChartOfAccount|null $parentAccount
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ChartOfAccount newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ChartOfAccount newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ChartOfAccount query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ChartOfAccount whereAccountCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ChartOfAccount whereAccountName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ChartOfAccount whereAccountType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ChartOfAccount whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ChartOfAccount whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ChartOfAccount whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ChartOfAccount whereIsPosting($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ChartOfAccount whereLevel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ChartOfAccount whereParentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ChartOfAccount whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ChartOfAccount whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 // {
 //     use HasFactory;
 

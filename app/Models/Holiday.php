@@ -5,6 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property \Carbon\CarbonImmutable $date
+ * @property bool $is_recurring
+ * @property \Carbon\CarbonImmutable|null $created_at
+ * @property \Carbon\CarbonImmutable|null $updated_at
+ * @property-read mixed $display_date
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday forCalendar()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday whereIsRecurring($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class Holiday extends Model
 {
     protected $fillable = ['name', 'date', 'is_recurring'];

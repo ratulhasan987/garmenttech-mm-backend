@@ -16,12 +16,6 @@ class StoreBuildingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => [
-                'required',
-                'string',
-                'max:255',
-                'unique:buildings,code',
-            ],
             'name' => [
                 'required',
                 'string',
@@ -46,7 +40,6 @@ class StoreBuildingRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'code.unique' => 'A building with this code already exists.',
             'name.unique' => 'A building with this name already exists.',
         ];
     }
